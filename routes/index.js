@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 var _ = require('lodash');
+var rooms = require('../models/rooms');
 
 var apiKey = process.env.TOKBOX_API_KEY;
 var secret = process.env.TOKBOX_SECRET;
@@ -33,7 +34,7 @@ function findRoomFromSessionId(sessionId) {
 }
 
 router.get('/', function (req, res) {
-  res.render('index', { title: 'Learning-OpenTok-Node' });
+  res.render('index', { title: 'Entrada' });
 });
 
 /**
@@ -54,10 +55,14 @@ router.get('/room/:name', function (req, res) {
 
   // if the room name is associated with a session ID, fetch that
   if (roomToSessionIdDictionary[roomName]) {
+    console.log('tengo ya habita');
     sessionId = roomToSessionIdDictionary[roomName];
-
+    var tokenOptions = {};
+    tokenOptions.role = "publisher";
+    tokenOptions.data = "{'username':'bob','loquesea':'e'}";
     // generate token
-    token = opentok.generateToken(sessionId);
+    token = opentok.generateToken(sessionId,tokenOptions);
+    console.log(token);
     res.setHeader('Content-Type', 'application/json');
     res.send({
       apiKey: apiKey,
