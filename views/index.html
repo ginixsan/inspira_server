@@ -5,7 +5,81 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title><%= title %></title>
   <link rel="stylesheet" href="../public//stylesheets/style.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-
+    
+    <form action = "/room", method = "POST">
+        <div class="form-group row">
+          <label for="nombreSala" class="col-4 col-form-label">Nombre Sala</label> 
+          <div class="col-8">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="fa fa-home"></i>
+                </div>
+              </div> 
+              <input id="nombreSala" name="nombreSala" type="text" required="required" class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="maxParticipantes" class="col-4 col-form-label">Máximo de participantes</label> 
+          <div class="col-8">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="fa fa-female"></i>
+                </div>
+              </div> 
+              <input id="maxParticipantes" name="maxParticipantes" placeholder="0 para no limitar la sala" type="text" required="required" class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-4">Tipo Pago</label> 
+          <div class="col-8">
+            <div class="custom-control custom-radio custom-control-inline">
+              <input name="tipoPago" id="tipoPago_0" type="radio" required="required" class="custom-control-input" value="1" checked> 
+              <label for="tipoPago_0" class="custom-control-label">gratis</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input name="tipoPago" id="tipoPago_1" type="radio" required="required" class="custom-control-input" value="2"> 
+              <label for="tipoPago_1" class="custom-control-label">voluntario</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input name="tipoPago" id="tipoPago_2" type="radio" required="required" class="custom-control-input" value="3"> 
+              <label for="tipoPago_2" class="custom-control-label">fijo</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="precio" class="col-4 col-form-label">precio</label> 
+          <div class="col-8">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <i class="fa fa-money"></i>
+                </div>
+              </div> 
+              <input id="precio" name="precio" type="text" value=0.00 class="form-control">
+            </div>
+          </div>
+        </div> 
+        <div class="form-group row">
+          <div class="offset-4 col-8">
+            <button name="submit" type="submit" class="btn btn-primary">Crear</button>
+          </div>
+        </div>
+      </form>
 </body>
+<script>
+    var currentValue = 1;
+    function handleClick(myRadio) {
+        console.log(myRadio);
+        console.log('Old value: ' + currentValue);
+        console.log('New value: ' + myRadio.value);
+        currentValue = myRadio.value;
+    }
+</script>

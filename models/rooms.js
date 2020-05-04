@@ -5,12 +5,27 @@ var RoomsSchema = new mongoose.Schema({
   participants: [{
       email:String,
       token:String,
-      publicToken:String
+      publicToken:{
+          type:Boolean,
+          default:true
+      },
+      maxPublicToken:{
+        type:Number,
+        default:0
+    },
+      timesUsedToken:{
+        type:Number,
+        default:0
+    }
+
   }],
   maxParticipants:Number,
   payment:{
       //1->gratis,2->voluntad,3->precio
-    tipo:Number,
+    tipo:{
+        type:Number,
+        default:0
+    },
     amount:Number
   }
 });

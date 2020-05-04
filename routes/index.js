@@ -43,7 +43,59 @@ router.get('/', function (req, res) {
 router.get('/session', function (req, res) {
   res.redirect('/room/session');
 });
+/**
+ * POST /room/
+ * crea una sala y guarda en BBDD los datos de la sala
+ */
+router.post('/room', function (req, res) {
+  var roomName = req.params.name;
+  var sessionId;
+  var token;
+  console.log('attempting to create a session associated with the room: ' + roomName);
 
+  // if the room name is associated with a session ID, fetch that
+  if (roomToSessionIdDictionary[roomName]) {
+    console.log('tengo ya habita');
+    sessionId = roomToSessionIdDictionary[roomName];
+    var tokenOptions = {};
+    tokenOptions.role = "publisher";
+    tokenOptions.data = "{'username':'bob','loquesea':'e'}";
+    // generate token
+    token = opentok.generateToken(sessionId,tokenOptions);
+    console.log(token);
+    res.setHeader('Content-Type', 'application/json');
+    res.send({
+      apiKey: apiKey,
+      sessionId: sessionId,
+      token: token
+    });
+  }
+  // if this is the first time the room is being accessed, create a new session ID
+  else {
+    opentok.createSession({ mediaMode: 'routed' }, function (err, session) {
+      if (err) {
+        console.log(err);
+        res.status(500).send({ error: 'createSession error:' + err });
+        return;
+      }
+
+      // now that the room name has a session associated wit it, store it in memory
+      // IMPORTANT: Because this is stored in memory, restarting your server will reset these values
+      // if you want to store a room-to-session association in your production application
+      // you should use a more persistent storage for them
+      roomToSessionIdDictionary[roomName] = session.sessionId;
+
+      // generate token
+      token = opentok.generateToken(session.sessionId);
+      res.setHeader('Content-Type', 'application/json');
+      res.send({
+        apiKey: apiKey,
+        sessionId: session.sessionId,
+        token: token
+      });
+    });
+  }
+});
 /**
  * GET /room/:name
  */
