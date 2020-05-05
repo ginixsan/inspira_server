@@ -67,13 +67,13 @@
                 <div class="crear-icon inline-block">
                     <i data-feather="tv"></i> 
                 </div>
-                <input type="text" id="conference-name" class="create inline-block" placeholder="Class Name"><br><br>
+                <input type="text" id="nombreSala" class="create inline-block" placeholder="Class Name"><br><br>
             </div> 
             <div class="block">
                 <div class="crear-icon inline-block">
                     <i data-feather="users"></i> 
                 </div>
-                <input type="number" min="1" max="50" id="users-number" class="create inline-block" placeholder="1"><br><br>
+                <input type="number" min="1" max="50" id="maxParticipants" class="create inline-block" value=1><br><br>
             </div> 
             
             
@@ -142,7 +142,7 @@
             
             //Radio Buttons 
             $(document).on("click","button.type-free",function() {
-                radiotype ="free";
+                radiotype =1;
                 $(this).css( 'background-color', '#4e8f00');
                 $(this).css( 'border-color', '#4e8f00');
                 
@@ -152,11 +152,11 @@
                 $("button.type-fee").css( 'background-color', '#424242');
                 $("button.type-fee").css( 'border-color', '#424242');
                 $(".make-payment").css('display', 'none');
-                amount=[];
+                amount=[0];
             });
             
             $(document).on("click","button.type-donation",function() {
-                radiotype ="donation";
+                radiotype =2;
                 $(this).css( 'background-color', '#0096ff');
                 $(this).css( 'border-color', '#0096ff');
                 
@@ -166,12 +166,13 @@
                 $("button.type-fee").css( 'background-color', '#424242');
                 $("button.type-fee").css( 'border-color', '#424242');
                 $(".make-payment").css('display', 'block');
-                $(".amount").val('1,5,10,15');
+                $(".amount").val('1.00,5.00,10.00,15.00');
                 amount=[1.00,5.00,10.00,15.00];
+                
             });
             
             $(document).on("click","button.type-fee",function() {
-                radiotype ="fee";
+                radiotype =3;
                 $(this).css( 'background-color', '#941100');
                 $(this).css( 'border-color', '#941100');
                 
@@ -181,8 +182,8 @@
                 $("button.type-donation").css( 'background-color', '#424242');
                 $("button.type-donation").css( 'border-color', '#424242');
                 $(".make-payment").css('display', 'block');
-                $(".amount").val('10,00');
-                amount=[10.00]
+                $(".amount").val('10.00');
+                amount=[10.00];
             });
             
             
@@ -195,17 +196,17 @@
                 var name = $('#profe-name').val();
                 localStorage.setItem('hola_name',name); 
                 
-                var conferenceName = $('#conference-name').val();
-                var usersNumber = $('#users-number').val();
-                
+                const conferenceName = $('#nombreSala').val();
+                const usersNumber = $('#maxParticipants').val();
+                //let amount= $(".amount").val().split(',');
                 console.log('email > '+ email, 'name > '+ name, 'conferenceName > '+ conferenceName, 'usersNumber > '+ usersNumber, 'radiotype > '+ radiotype, 'amount > '+ amount);
                 const url='/room';
                 const data={
                         'email':email, 
                         'name':name, 
-                        'conferenceName':conferenceName, 
-                        'usersNumber':usersNumber,
-                        'radiotype':radiotype,
+                        'nombreSala':conferenceName, 
+                        'maxParticipants':usersNumber,
+                        'tipoSala':radiotype,
                         'amount':amount
                     };
                 $.ajax({

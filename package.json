@@ -21,6 +21,7 @@
     "mongoose": "^5.9.11",
     "morgan": "^1.10.0",
     "opentok": "^2.10.0",
-    "serve-favicon": "~2.5.0"
+    "serve-favicon": "~2.5.0",
+    "token-generator": "^1.0.0"
   }
 }

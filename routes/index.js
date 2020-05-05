@@ -2,9 +2,11 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 var _ = require('lodash');
+var mongoose = require('mongoose');
 var roomsModel = require('../models/rooms');
-
-
+let usersModel=require('../models/user');
+const rooms = mongoose.model('rooms');
+const user= mongoose.model('users');
 var apiKey = process.env.TOKBOX_API_KEY;
 var secret = process.env.TOKBOX_SECRET;
 
@@ -54,19 +56,14 @@ router.get('/session', function (req, res) {
  * crea una sala y guarda en BBDD los datos de la sala
  */
 router.post('/room',function (req, res) {
-  var roomName = req.body.conferenceName;
-  console.log(req.body);
+  var roomName = req.body.nombreSala;
+  //console.log(req.body);
   console.log(roomName);
-  try {
-    roomsModel.save();
-    console.log(guardado);
-  } catch (err) {
-    console.log(err);
-  }
+
   var sessionId;
   var token;
   console.log('attempting to create a session associated with the room: ' + roomName);
-
+/*
   // if the room name is associated with a session ID, fetch that
   if (roomToSessionIdDictionary[roomName]) {
     console.log('tengo ya habita');
@@ -85,13 +82,59 @@ router.post('/room',function (req, res) {
     });
   }
   // if this is the first time the room is being accessed, create a new session ID
-  else {
+  else {*/
     opentok.createSession({ mediaMode: 'routed' }, function (err, session) {
-      if (err) {
-        console.log(err);
-        res.status(500).send({ error: 'createSession error:' + err });
-        return;
-      }
+      //const room = new rooms(req.body);
+      console.log(req.body); 
+      user.findOne({email:req.body.email},function(err,user)
+      {
+        if(req.body.tipoSala!=1)
+        {
+          let amount=req.body.amount.map(function(value){
+            return Number(value);
+          })
+          console.log(typeof amount);
+        }
+        else
+        {
+          amount=[];
+        }
+        if(user)
+        { 
+            var TokenGenerator = require('token-generator')({
+              salt: 'your secret ingredient for this magic recipe',
+              timestampMap: 'abcdefghij', // 10 chars array for obfuscation proposes
+          });
+          var token = TokenGenerator.generate();
+          console.log('el token '+token);
+          let objetoModelo={
+            ownerId:user._id,
+            nombreSala:req.body.nombreSala,
+            maxParticipants:req.body.maxParticipants,
+            sessionId:session.sessionId,
+            unifiedToken:token,
+            payment:{
+
+            }
+          };
+          objetoModelo.payment.tipo=req.body.tipoSala;
+          objetoModelo.payment.amount=amount;
+          console.log(objetoModelo);
+          
+          const room = new rooms(objetoModelo);
+          room.save((err, room) => {
+            if (err) console.log(err);
+            console.log(room);
+          });
+          if (err) {
+            console.log(err);
+            res.status(500).send({ error: 'createSession error:' + err });
+            return;
+          }
+        }
+
+      });
+      /**/
 
       // now that the room name has a session associated wit it, store it in memory
       // IMPORTANT: Because this is stored in memory, restarting your server will reset these values
@@ -108,7 +151,7 @@ router.post('/room',function (req, res) {
         token: token
       });
     });
-  }
+ // }*/
 });
 /**
  * GET /room/:name

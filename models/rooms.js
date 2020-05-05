@@ -3,6 +3,7 @@ var RoomsSchema = new mongoose.Schema({
   nombreSala: String,
   sessionId: String,
   ownerId:mongoose.ObjectId,
+  unifiedToken:String,
   participants: [{
       email:String,
       token:String,
@@ -27,7 +28,9 @@ var RoomsSchema = new mongoose.Schema({
         type:Number,
         default:0
     },
-    amount:Number
+    amount:[{
+      type:Number
+    }]
   }
 },{timestamps:{ createdAt: 'creadaEn', updatedAt: 'modificadaEn' }});
 // Getter
