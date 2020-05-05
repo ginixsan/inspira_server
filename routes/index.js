@@ -7,6 +7,9 @@ var roomsModel = require('../models/rooms');
 let usersModel=require('../models/user');
 const rooms = mongoose.model('rooms');
 const user= mongoose.model('users');
+var randomToken = require('random-token');
+
+
 var apiKey = process.env.TOKBOX_API_KEY;
 var secret = process.env.TOKBOX_SECRET;
 
@@ -62,51 +65,17 @@ router.post('/room',function (req, res) {
 
   var sessionId;
   var token;
-  console.log('attempting to create a session associated with the room: ' + roomName);
-/*
-  // if the room name is associated with a session ID, fetch that
-  if (roomToSessionIdDictionary[roomName]) {
-    console.log('tengo ya habita');
-    sessionId = roomToSessionIdDictionary[roomName];
-    var tokenOptions = {};
-    tokenOptions.role = "publisher";
-    tokenOptions.data = "{'username':'bob','loquesea':'e'}";
-    // generate token
-    token = opentok.generateToken(sessionId,tokenOptions);
-    console.log(token);
-    res.setHeader('Content-Type', 'application/json');
-    res.send({
-      apiKey: apiKey,
-      sessionId: sessionId,
-      token: token
-    });
-  }
-  // if this is the first time the room is being accessed, create a new session ID
-  else {*/
+  console.log('creando sala con nombre: ' + roomName);
     opentok.createSession({ mediaMode: 'routed' }, function (err, session) {
       //const room = new rooms(req.body);
       console.log(req.body); 
       user.findOne({email:req.body.email},function(err,user)
       {
-        /*if(req.body.tipoSala!=1)
-        {
-          let amount=req.body.amount.map(function(value){
-            return Number(value);
-          })
-          console.log(typeof amount);
-        }
-        else
-        {
-          amount=[];
-        }*/
         let amount=req.body.amount;
         if(user)
         { 
-            var TokenGenerator = require('token-generator')({
-              salt: 'your secret ingredient for this magic recipe',
-              timestampMap: 'abcdefghij', // 10 chars array for obfuscation proposes
-          });
-          var token = TokenGenerator.generate();
+            
+          var token = randomToken(16);;
           console.log('el token '+token);
           let objetoModelo={
             ownerId:user._id,
