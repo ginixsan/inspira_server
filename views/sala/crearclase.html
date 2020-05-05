@@ -229,6 +229,7 @@
                     data: JSON.stringify(data),
                     success: function (resp) {
                         console.log(resp);
+                        window.location.replace("/"+resp.tokenSala);
 
                     }
                 });

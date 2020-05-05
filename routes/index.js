@@ -75,14 +75,14 @@ router.post('/room',function (req, res) {
         if(user)
         { 
             
-          var token = randomToken(16);;
+          var tokenSala = randomToken(16);;
           console.log('el token '+token);
           let objetoModelo={
             ownerId:user._id,
             nombreSala:req.body.nombreSala,
             maxParticipants:req.body.maxParticipants,
             sessionId:session.sessionId,
-            unifiedToken:token,
+            unifiedToken:tokenSala,
             payment:{
               tipo:req.body.tipoSala,
               amount:amount
@@ -105,7 +105,8 @@ router.post('/room',function (req, res) {
               res.send({
                 apiKey: apiKey,
                 sessionId: session.sessionId,
-                token: token
+                token: token,
+                tokenSala:tokenSala
               });
           });
           if (err) {
@@ -120,57 +121,31 @@ router.post('/room',function (req, res) {
     });
  // }*/
 });
+router.get('/assets/app_profe.js',function(req,res){
+  res.sendFile(path.join(__dirname + '/app_profe.js'));
+});
+router.get('/stylesheets/app_profe.css',function(req,res){
+  res.sendFile(path.join(__dirname + '/app_profe.css'));
+});
 /**
  * GET /room/:name
  */
-router.get('/room/:name', function (req, res) {
-  var roomName = req.params.name;
-  var sessionId;
-  var token;
-  console.log('attempting to create a session associated with the room: ' + roomName);
-
-  // if the room name is associated with a session ID, fetch that
-  if (roomToSessionIdDictionary[roomName]) {
-    console.log('tengo ya habita');
-    sessionId = roomToSessionIdDictionary[roomName];
-    var tokenOptions = {};
-    tokenOptions.role = "publisher";
-    tokenOptions.data = "{'username':'bob','loquesea':'e'}";
-    // generate token
-    token = opentok.generateToken(sessionId,tokenOptions);
-    console.log(token);
-    res.setHeader('Content-Type', 'application/json');
-    res.send({
-      apiKey: apiKey,
-      sessionId: sessionId,
-      token: token
-    });
-  }
-  // if this is the first time the room is being accessed, create a new session ID
-  else {
-    opentok.createSession({ mediaMode: 'routed' }, function (err, session) {
-      if (err) {
-        console.log(err);
-        res.status(500).send({ error: 'createSession error:' + err });
-        return;
-      }
-
-      // now that the room name has a session associated wit it, store it in memory
-      // IMPORTANT: Because this is stored in memory, restarting your server will reset these values
-      // if you want to store a room-to-session association in your production application
-      // you should use a more persistent storage for them
-      roomToSessionIdDictionary[roomName] = session.sessionId;
-
-      // generate token
-      token = opentok.generateToken(session.sessionId);
-      res.setHeader('Content-Type', 'application/json');
-      res.send({
-        apiKey: apiKey,
-        sessionId: session.sessionId,
-        token: token
-      });
-    });
-  }
+router.get('/room/:token', function (req, res) {
+  var token = req.params.token;
+  rooms.findOne({unifiedToken:token},function(err,habita){
+    if(habita)
+    {
+      console.log('el session id es '+habita.sessionId);
+      const sessionId=habita.sessionId;
+      const tokenOpen = opentok.generateToken(sessionId);
+      res.render('indexprofe',{ apiKey: apiKey,
+        sessionId: sessionId,
+        token: tokenOpen});
+      //res.sendFile(path.join(__dirname + '/app.js'));
+    }
+  });
+  
+  
 });
 
 /**
