@@ -75,7 +75,8 @@ router.post('/room',function (req, res) {
         if(user)
         { 
             
-          var tokenSala = randomToken(16);;
+          var tokenSala = randomToken(16);
+          var tokenProfe=randomToken(16);
           console.log('el token '+token);
           let objetoModelo={
             ownerId:user._id,
@@ -83,6 +84,7 @@ router.post('/room',function (req, res) {
             maxParticipants:req.body.maxParticipants,
             sessionId:session.sessionId,
             unifiedToken:tokenSala,
+            teacherToken:tokenProfe,
             payment:{
               tipo:req.body.tipoSala,
               amount:amount
@@ -106,7 +108,7 @@ router.post('/room',function (req, res) {
                 apiKey: apiKey,
                 sessionId: session.sessionId,
                 token: token,
-                tokenSala:tokenSala
+                tokenSala:tokenProfe
               });
           });
           if (err) {
@@ -127,10 +129,63 @@ router.get('/assets/app_profe.js',function(req,res){
 router.get('/stylesheets/app_profe.css',function(req,res){
   res.sendFile(path.join(__dirname + '/app_profe.css'));
 });
+router.get('/assets/app_alumno.js',function(req,res){
+  res.sendFile(path.join(__dirname + '/app_profe.js'));
+});
+router.get('/stylesheets/app_alumno.css',function(req,res){
+  res.sendFile(path.join(__dirname + '/app_profe.css'));
+});
 /**
  * GET /room/:name
  */
 router.get('/room/:token', function (req, res) {
+  var token = req.params.token;
+  rooms.findOne({unifiedToken:token},function(err,habita){
+    if(habita)
+    {
+      console.log('el session id es '+habita.sessionId);
+      const sessionId=habita.sessionId;
+      const tokenOpen = opentok.generateToken(sessionId);
+      res.render('indexalumno',{ apiKey: apiKey,
+        sessionId: sessionId,
+        token: tokenOpen});
+      //res.sendFile(path.join(__dirname + '/app.js'));
+    }
+    else
+    {
+      rooms.findOne({teacherToken:token},function(err,habita){
+        if(habita)
+        {
+          console.log('el session id es '+habita.sessionId);
+          const sessionId=habita.sessionId;
+          const tokenOpen = opentok.generateToken(sessionId);
+          res.render('indexprofe',{ apiKey: apiKey,
+            sessionId: sessionId,
+            token: tokenOpen});
+          //res.sendFile(path.join(__dirname + '/app.js'));
+        }
+      });
+    }
+  });
+});
+/*router.get('/room/:token', function (req, res) {
+  var token = req.params.token;
+  rooms.findOne({unifiedToken:token},function(err,habita){
+    if(habita)
+    {
+      console.log('el session id es '+habita.sessionId);
+      const sessionId=habita.sessionId;
+      const tokenOpen = opentok.generateToken(sessionId);
+      res.render('indexprofe',{ apiKey: apiKey,
+        sessionId: sessionId,
+        token: tokenOpen});
+      //res.sendFile(path.join(__dirname + '/app.js'));
+    }
+  });
+  
+  
+});*/
+router.get('/available/:token', function (req, res) {
   var token = req.params.token;
   rooms.findOne({unifiedToken:token},function(err,habita){
     if(habita)
@@ -147,7 +202,6 @@ router.get('/room/:token', function (req, res) {
   
   
 });
-
 /**
  * POST /archive/start
  */

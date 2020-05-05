@@ -4,6 +4,7 @@ var RoomsSchema = new mongoose.Schema({
   sessionId: String,
   ownerId:mongoose.ObjectId,
   unifiedToken:String,
+  teacherToken:String,
   participants: [{
       email:String,
       token:String,
