@@ -88,7 +88,7 @@ router.post('/room',function (req, res) {
       console.log(req.body); 
       user.findOne({email:req.body.email},function(err,user)
       {
-        if(req.body.tipoSala!=1)
+        /*if(req.body.tipoSala!=1)
         {
           let amount=req.body.amount.map(function(value){
             return Number(value);
@@ -98,7 +98,8 @@ router.post('/room',function (req, res) {
         else
         {
           amount=[];
-        }
+        }*/
+        let amount=req.body.amount;
         if(user)
         { 
             var TokenGenerator = require('token-generator')({
@@ -114,17 +115,29 @@ router.post('/room',function (req, res) {
             sessionId:session.sessionId,
             unifiedToken:token,
             payment:{
-
+              tipo:req.body.tipoSala,
+              amount:amount
             }
           };
-          objetoModelo.payment.tipo=req.body.tipoSala;
-          objetoModelo.payment.amount=amount;
-          console.log(objetoModelo);
           
           const room = new rooms(objetoModelo);
           room.save((err, room) => {
-            if (err) console.log(err);
-            console.log(room);
+            if (err) 
+            {
+              console.log(err);
+              const error= new Error(err);
+              error.status = 500;
+              return;
+            }
+              console.log(room);
+              // generate token
+              token = opentok.generateToken(session.sessionId);
+              res.setHeader('Content-Type', 'application/json');
+              res.send({
+                apiKey: apiKey,
+                sessionId: session.sessionId,
+                token: token
+              });
           });
           if (err) {
             console.log(err);
@@ -134,22 +147,7 @@ router.post('/room',function (req, res) {
         }
 
       });
-      /**/
-
-      // now that the room name has a session associated wit it, store it in memory
-      // IMPORTANT: Because this is stored in memory, restarting your server will reset these values
-      // if you want to store a room-to-session association in your production application
-      // you should use a more persistent storage for them
-      roomToSessionIdDictionary[roomName] = session.sessionId;
-
-      // generate token
-      token = opentok.generateToken(session.sessionId);
-      res.setHeader('Content-Type', 'application/json');
-      res.send({
-        apiKey: apiKey,
-        sessionId: session.sessionId,
-        token: token
-      });
+      
     });
  // }*/
 });

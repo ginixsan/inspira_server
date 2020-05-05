@@ -90,7 +90,7 @@
                 
                 <div class="make-payment">
                     <h3 class="patmenttitle">Payment</h3>
-                    <input type="text" id="amount" class="amount inline-block" placeholder="" value="1,5,10,15,20,25,30">
+                    <input type="text" id="amount" class="amount inline-block" placeholder="" value="0">
                     
                 </div>
             
@@ -121,7 +121,7 @@
             feather.replace();
            
             var radiotype ="";
-            var amount ="";
+            var amount =[];
             $(".make-payment").css('display', 'none');
             
             // Recuperamos de LocalStorage
@@ -152,6 +152,7 @@
                 $("button.type-fee").css( 'background-color', '#424242');
                 $("button.type-fee").css( 'border-color', '#424242');
                 $(".make-payment").css('display', 'none');
+                $(".amount").val('0.00');
                 amount=[0];
             });
             
@@ -167,7 +168,7 @@
                 $("button.type-fee").css( 'border-color', '#424242');
                 $(".make-payment").css('display', 'block');
                 $(".amount").val('1.00,5.00,10.00,15.00');
-                amount=[1.00,5.00,10.00,15.00];
+                //amount=[1.00,5.00,10.00,15.00];
                 
             });
             
@@ -183,10 +184,17 @@
                 $("button.type-donation").css( 'border-color', '#424242');
                 $(".make-payment").css('display', 'block');
                 $(".amount").val('10.00');
-                amount=[10.00];
+                //amount=[10.00];
             });
             
-            
+            function anyadeZeros(num) {
+                var value = Number(num);      
+                var res = num.split(".");     
+                if(res.length == 1 || res[1].length < 3) { 
+                    value = value.toFixed(2);
+                }
+            return value;
+            }
             
             //CallToRoom
             $(document).on("click","button#start-conferencing",function() {
@@ -199,6 +207,10 @@
                 const conferenceName = $('#nombreSala').val();
                 const usersNumber = $('#maxParticipants').val();
                 //let amount= $(".amount").val().split(',');
+                amount = $(".amount").val().split(",").map(function (item) {
+                    return parseInt(anyadeZeros(item)*100);
+                });
+                console.log(amount);
                 console.log('email > '+ email, 'name > '+ name, 'conferenceName > '+ conferenceName, 'usersNumber > '+ usersNumber, 'radiotype > '+ radiotype, 'amount > '+ amount);
                 const url='/room';
                 const data={

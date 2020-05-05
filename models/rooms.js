@@ -26,7 +26,7 @@ var RoomsSchema = new mongoose.Schema({
       //1->gratis,2->voluntad,3->precio
     tipo:{
         type:Number,
-        default:0
+        default:1
     },
     amount:[{
       type:Number
@@ -34,13 +34,27 @@ var RoomsSchema = new mongoose.Schema({
   }
 },{timestamps:{ createdAt: 'creadaEn', updatedAt: 'modificadaEn' }});
 // Getter
-RoomsSchema.path('payment.amount').get(function(num) {
+/*RoomsSchema.path('payment.amount').get(function(num) {
     return (num / 100).toFixed(2);
   });
   
   // Setter
 RoomsSchema.path('payment.amount').set(function(num) {
     return num * 100;
-  });
+  });*/
+  function convierte(item)
+  {
+    item.map(function(value){
+      return (num / 100).toFixed(2);
+    });
+    return item;
+  }
+  function recupera(item)
+  {
+    item.map(function(value){
+      return num * 100;
+    });
+    return item;
+  }
 mongoose.model('rooms', RoomsSchema);
 module.exports = mongoose.model('rooms');
