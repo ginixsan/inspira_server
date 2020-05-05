@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html id="home" lang="en">
+
+    <head>
+     
+        <title>Clase Espira</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <link rel="stylesheet" href="./style.css">
+
+
+        <script src="https://unpkg.com/feather-icons"></script>
+
+
+    </head>
+
+    <body>
+       
+        <div class="topframe create-class visible">
+            <div class="block">
+            <h3>Create Classroom</h3>
+            </div> 
+            
+            <div class="block">
+                <div class="crear-icon inline-block">
+                    <i data-feather="mail"></i> 
+                </div>
+                <input type="text" id="profe-email" class="create inline-block" placeholder="Email"><br><br>
+            </div> 
+            <div class="block">
+                <div class="crear-icon inline-block">
+                    <i data-feather="user"></i> 
+                </div>
+                <input type="text" id="profe-name" class="create inline-block" placeholder="Name"><br><br>
+            </div> 
+            
+            <div class="block">
+                <div class="crear-icon inline-block">
+                    <i data-feather="tv"></i> 
+                </div>
+                <input type="text" id="conference-name" class="create inline-block" placeholder="Class Name"><br><br>
+            </div> 
+            <div class="block">
+                <div class="crear-icon inline-block">
+                    <i data-feather="users"></i> 
+                </div>
+                <input type="number" min="1" max="50" id="users-number" class="create inline-block" placeholder="1"><br><br>
+            </div> 
+            
+            
+            <div class="block">
+                <h3>Classroom type</h3>
+                <div class="inline-block tabs-buttons">
+                    
+                    <button class="type-free">Free</button>
+                    
+                    <button class="type-donation">Donation</button>
+                    
+                    <button class="type-fee">Fee</button>
+                </div>
+                
+                <div class="make-payment">
+                    <h3 class="patmenttitle">Payment</h3>
+                    <input type="text" id="amount" class="amount inline-block" placeholder="" value="1,5,10,15,20,25,30">
+                    
+                </div>
+            
+            </div>
+            
+            <div class="block">
+                
+                
+                <button id="start-conferencing" class="displayblock">Create Classroom</button>
+            </div> 
+
+            
+          
+               
+               
+        </div>
+
+        
+        
+        
+       
+        
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>  
+        
+        <script>
+            //Icons
+            feather.replace();
+           
+            var radiotype ="";
+            var amout ="";
+            $(".make-payment").css('display', 'none');
+            
+            // Recuperamos de LocalStorage
+            var storedEmail = localStorage.getItem('hola_email');
+            var storedName = localStorage.getItem('hola_name');
+            
+            
+            if(storedEmail !== null){
+                $('#profe-email').val(storedEmail);
+                $('#profe-email').prop('readonly', true);
+            }
+            
+            if(storedName !== null){
+                $('#profe-name').val(storedName);
+                $('#profe-name').prop('readonly', true);
+            }
+            
+            
+            //Radio Buttons 
+            $(document).on("click","button.type-free",function() {
+                radiotype ="free";
+                $(this).css( 'background-color', '#4e8f00');
+                $(this).css( 'border-color', '#4e8f00');
+                
+                $("button.type-donation").css( 'background-color', '#424242');
+                $("button.type-donation").css( 'border-color', '#424242');
+                
+                $("button.type-fee").css( 'background-color', '#424242');
+                $("button.type-fee").css( 'border-color', '#424242');
+                $(".make-payment").css('display', 'none');
+            });
+            
+            $(document).on("click","button.type-donation",function() {
+                radiotype ="donation";
+                $(this).css( 'background-color', '#0096ff');
+                $(this).css( 'border-color', '#0096ff');
+                
+                $("button.type-free").css( 'background-color', '#424242');
+                $("button.type-free").css( 'border-color', '#424242');
+
+                $("button.type-fee").css( 'background-color', '#424242');
+                $("button.type-fee").css( 'border-color', '#424242');
+                $(".make-payment").css('display', 'block');
+                $(".amount").val('1,5,10,15');
+            });
+            
+            $(document).on("click","button.type-fee",function() {
+                radiotype ="fee";
+                $(this).css( 'background-color', '#941100');
+                $(this).css( 'border-color', '#941100');
+                
+                $("button.type-free").css( 'background-color', '#424242');
+                $("button.type-free").css( 'border-color', '#424242');
+                
+                $("button.type-donation").css( 'background-color', '#424242');
+                $("button.type-donation").css( 'border-color', '#424242');
+                $(".make-payment").css('display', 'block');
+                $(".amount").val('10,00');
+            });
+            
+            
+            
+            //CallToRoom
+            $(document).on("click","button#start-conferencing",function() {
+                var email = $('#profe-email').val();
+                localStorage.setItem('hola_email',email); 
+                
+                var name = $('#profe-name').val();
+                localStorage.setItem('hola_name',name); 
+                
+                var conferenceName = $('#conference-name').val();
+                var usersNumber = $('#users-number').val();
+                
+                console.log('email > '+ email, 'name > '+ name, 'conferenceName > '+ conferenceName, 'usersNumber > '+ usersNumber, 'radiotype > '+ radiotype, 'amout > '+ amout);
+                
+                /*
+                url="";
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {'email':email, 'name':name, 'conferenceName':conferenceName, 'usersNumber':usersNumber, 'radiotype':radiotype, 'amout':amout},
+                    success: function (resp) {
+                        console.log(resp);
+                    }
+                });
+                */
+            });
+            
+        </script> 
+    </body>
+</html>
