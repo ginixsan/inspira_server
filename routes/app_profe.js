@@ -19,7 +19,7 @@ function CopyToClipboard(containerid) {
     range.selectNode(document.getElementById(containerid));
     window.getSelection().addRange(range);
     document.execCommand("copy");
-    alert("Text has been copied, now paste in the text-area")
+    alert("El texto se ha copiado")
   }
 }
 function initializeSession() {
@@ -37,13 +37,30 @@ function initializeSession() {
   session.on('sessionConnected', function sessionDisconnected(event) {
     console.log('Me he conectado a la sesion.', event.reason);
     //LLAMA A REDIS Y DILE QUE TE HAS CONECTADO CON EL TOKEN
+    fetch('/conectado/'+token+'/1').then(function fetch(res) {
+      return res.json();
+    }).then(function fetchJson(json) {
+      console.log(json);
+    }).catch(function catchErr(error) {
+      handleError(error);
+      console.log(error);
+    });
   });
   session.on('sessionDisconnected', function sessionDisconnected(event) {
     console.log('Me he desconectado de la sesion.', event.reason);
     //LLAMA A REDIS Y DILE QUE TE HAS DESCONECTADO
+    fetch('/conectado/'+token+'/0').then(function fetch(res) {
+      return res.json();
+    }).then(function fetchJson(json) {
+      console.log(json);
+  
+    }).catch(function catchErr(error) {
+      handleError(error);
+      console.log(error);
+    });
   });
   session.on("signal", function(event) {
-    console.log("Signal sent from connection " + event.from.id);
+    console.log("Se ha enviado una señal desde " + event.from.id);
     console.log(event.data);
   });
   var publisherOptions = {
