@@ -28,7 +28,7 @@
         <link rel="stylesheet" href="./stylesheets/style.css">
 
 
-        <script src="https://unpkg.com/feather-icons"></script>
+        <script src="https://unpkg.com/feather-icons@4.28.0/dist/feather.min.js"></script>
 
 
     </head>
@@ -111,7 +111,7 @@
             feather.replace();
            
             var radiotype ="";
-            var amout ="";
+            var amount ="";
             $(".make-payment").css('display', 'none');
             
             // Recuperamos de LocalStorage
@@ -142,6 +142,7 @@
                 $("button.type-fee").css( 'background-color', '#424242');
                 $("button.type-fee").css( 'border-color', '#424242');
                 $(".make-payment").css('display', 'none');
+                amount=[];
             });
             
             $(document).on("click","button.type-donation",function() {
@@ -156,6 +157,7 @@
                 $("button.type-fee").css( 'border-color', '#424242');
                 $(".make-payment").css('display', 'block');
                 $(".amount").val('1,5,10,15');
+                amount=[1.00,5.00,10.00,15.00];
             });
             
             $(document).on("click","button.type-fee",function() {
@@ -170,6 +172,7 @@
                 $("button.type-donation").css( 'border-color', '#424242');
                 $(".make-payment").css('display', 'block');
                 $(".amount").val('10,00');
+                amount=[10.00]
             });
             
             
@@ -185,7 +188,7 @@
                 var conferenceName = $('#conference-name').val();
                 var usersNumber = $('#users-number').val();
                 
-                console.log('email > '+ email, 'name > '+ name, 'conferenceName > '+ conferenceName, 'usersNumber > '+ usersNumber, 'radiotype > '+ radiotype, 'amout > '+ amout);
+                console.log('email > '+ email, 'name > '+ name, 'conferenceName > '+ conferenceName, 'usersNumber > '+ usersNumber, 'radiotype > '+ radiotype, 'amount > '+ amout);
                 
                 /*
                 url="";
