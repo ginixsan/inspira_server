@@ -34,9 +34,14 @@ function findRoomFromSessionId(sessionId) {
 }
 
 router.get('/', function (req, res) {
-  res.render('index', { title: 'Entrada' });
+  res.render('index', { title: 'Entrada',userId:'5eafecf7b440541b0369ee07'});
+  //res.redirect('/room')
 });
 
+//crea habitacion
+router.get('/room',function(req,res){
+ res.render('crearclase',{title: 'Entrada'});
+});
 /**
  * GET /session redirects to /room/session
  */

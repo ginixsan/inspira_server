@@ -10,7 +10,8 @@ const cors = require('cors');
 const app = express();
 app.engine('.html', require('ejs').__express);
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+//[path.join(__dirname, 'frontend'), path.join(__dirname, 'frontend/locked'), path.join(__dirname, 'frontend/template'), path.join(__dirname, 'frontend/public')]
+app.set('views', [path.join(__dirname, 'views'),path.join(__dirname, 'views/sala'),path.join(__dirname, 'views/profe'),path.join(__dirname, 'views/estudiante')]);
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'html');
 
