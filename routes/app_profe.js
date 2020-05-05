@@ -89,18 +89,4 @@ if (API_KEY && TOKEN && SESSION_ID) {
   sessionId = SESSION_ID;
   token = TOKEN;
   initializeSession();
-} else if (SAMPLE_SERVER_BASE_URL) {
-  fetch(SAMPLE_SERVER_BASE_URL + '/room/ginix').then(function fetch(res) {
-    return res.json();
-  }).then(function fetchJson(json) {
-    apiKey = json.apiKey;
-    sessionId = json.sessionId;
-    token = json.token;
-    console.log(token);
-
-    initializeSession();
-  }).catch(function catchErr(error) {
-    handleError(error);
-    alert('Failed to get opentok sessionId and token. Make sure you have updated the config.js file.');
-  });
-}
+} 
