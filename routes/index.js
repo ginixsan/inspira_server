@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 var _ = require('lodash');
-var rooms = require('../models/rooms');
+var roomsModel = require('../models/rooms');
+
 
 var apiKey = process.env.TOKBOX_API_KEY;
 var secret = process.env.TOKBOX_SECRET;
@@ -40,7 +41,7 @@ router.get('/', function (req, res) {
 
 //crea habitacion
 router.get('/room',function(req,res){
- res.render('crearclase',{title: 'Entrada'});
+ res.render('crearclase',{title: 'Clase Espira'});
 });
 /**
  * GET /session redirects to /room/session
@@ -52,8 +53,16 @@ router.get('/session', function (req, res) {
  * POST /room/
  * crea una sala y guarda en BBDD los datos de la sala
  */
-router.post('/room', function (req, res) {
-  var roomName = req.params.name;
+router.post('/room',function (req, res) {
+  var roomName = req.body.conferenceName;
+  console.log(req.body);
+  console.log(roomName);
+  try {
+    roomsModel.save();
+    console.log(guardado);
+  } catch (err) {
+    console.log(err);
+  }
   var sessionId;
   var token;
   console.log('attempting to create a session associated with the room: ' + roomName);
