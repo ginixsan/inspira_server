@@ -15,7 +15,6 @@ function initializeSession() {
   session.on("connectionCreated", function(event) {
     console.log(event.connection.connectionId);
   });
-  // Subscribe to a newly created stream
   session.on('streamCreated', function streamCreated(event) {
     
     console.log('el nombre es '+event.stream.name);
@@ -44,11 +43,15 @@ function initializeSession() {
     }
   });
 
+  session.on('sessionConnected', function sessionDisconnected(event) {
+    console.log('Me he conectado a la sesion.', event.reason);
+    //LLAMA A REDIS Y DILE QUE TE HAS CONECTADO CON EL TOKEN
+  });
   session.on('sessionDisconnected', function sessionDisconnected(event) {
-    console.log('You were disconnected from the session.', event.reason);
+    console.log('Me he desconectado de la sesion.', event.reason);
+    //LLAMA A REDIS Y DILE QUE TE HAS DESCONECTADO
   });
 
-  // initialize the publisher
   var publisherOptions = {
     insertMode: 'append',
     width: '33%',
@@ -59,20 +62,17 @@ function initializeSession() {
     style:{nameDisplayMode:'on'}
   };
   var publisher = OT.initPublisher('subscriber', publisherOptions, handleError);
-  // Connect to the session
   session.connect(token, function callback(error) {
     if (error) {
       handleError(error);
     } else {
       console.log((session.connection.data));
-      // If the connection is successful, publish the publisher to the session
       session.publish(publisher, function(error){
         if(error)
         {
           handleError(error);
         }
         docReady(function() {
-          // DOM is loaded and ready for manipulation here
           let botonLevantaMano=document.getElementById('botonLevanta');
         
                 botonLevantaMano.onclick=function(){
@@ -101,14 +101,12 @@ function initializeSession() {
 API_KEY=apiKey;
 SESSION_ID=sessionId;
 TOKEN=token;
-// See the config.js file.
 if (API_KEY && TOKEN && SESSION_ID) {
   apiKey = API_KEY;
   sessionId = SESSION_ID;
   token = TOKEN;
   initializeSession();
 } else if (SAMPLE_SERVER_BASE_URL) {
-  // Make an Ajax request to get the OpenTok API key, session ID, and token from the server
   fetch(SAMPLE_SERVER_BASE_URL + '/room/ginix').then(function fetch(res) {
     return res.json();
   }).then(function fetchJson(json) {
@@ -124,9 +122,7 @@ if (API_KEY && TOKEN && SESSION_ID) {
   });
 }
 function docReady(fn) {
-  // see if DOM is already available
   if (document.readyState === "complete" || document.readyState === "interactive") {
-      // call on next available tick
       setTimeout(fn, 1);
   } else {
       document.addEventListener("DOMContentLoaded", fn);

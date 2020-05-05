@@ -202,6 +202,22 @@ router.get('/available/:token', function (req, res) {
   
   
 });
+router.post('/available/:token', function (req, res) {
+  var token = req.params.token;
+  rooms.findOne({unifiedToken:token},function(err,habita){
+    if(habita)
+    {
+      console.log('el session id es '+habita.sessionId);
+      const sessionId=habita.sessionId;
+      const tokenOpen = opentok.generateToken(sessionId);
+      res.render('indexprofe',{ apiKey: apiKey,
+        sessionId: sessionId,
+        token: tokenOpen});
+      //res.sendFile(path.join(__dirname + '/app.js'));
+    }
+  });
+
+});
 /**
  * POST /archive/start
  */

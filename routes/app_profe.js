@@ -1,4 +1,3 @@
-/* global OT API_KEY TOKEN SESSION_ID SAMPLE_SERVER_BASE_URL */
 
 var apiKey;
 var sessionId;
@@ -26,7 +25,6 @@ function CopyToClipboard(containerid) {
 function initializeSession() {
   var session = OT.initSession(apiKey, sessionId);
 
-  // Subscribe to a newly created stream
   session.on('streamCreated', function streamCreated(event) {
     var subscriberOptions = {
       insertMode: 'append',
@@ -36,16 +34,18 @@ function initializeSession() {
     };
     session.subscribe(event.stream, 'subscriber', subscriberOptions, handleError);
   });
-
+  session.on('sessionConnected', function sessionDisconnected(event) {
+    console.log('Me he conectado a la sesion.', event.reason);
+    //LLAMA A REDIS Y DILE QUE TE HAS CONECTADO CON EL TOKEN
+  });
   session.on('sessionDisconnected', function sessionDisconnected(event) {
-    console.log('You were disconnected from the session.', event.reason);
+    console.log('Me he desconectado de la sesion.', event.reason);
+    //LLAMA A REDIS Y DILE QUE TE HAS DESCONECTADO
   });
   session.on("signal", function(event) {
     console.log("Signal sent from connection " + event.from.id);
-    // Process the event.data property, if there is any data.
     console.log(event.data);
   });
-  // initialize the publisher
   var publisherOptions = {
     insertMode: 'append',
     width: '100%',
@@ -55,13 +55,11 @@ function initializeSession() {
   };
   var publisher = OT.initPublisher('publisher', publisherOptions, handleError);
 
-  // Connect to the session
   session.connect(token, function callback(error) {
     if (error) {
       handleError(error);
     } else {
       console.log((session));
-      // If the connection is successful, publish the publisher to the session
       session.publish(publisher, handleError);
     }
   });
@@ -69,14 +67,12 @@ function initializeSession() {
 API_KEY=apiKey;
 SESSION_ID=sessionId;
 TOKEN=token;
-// See the config.js file.
 if (API_KEY && TOKEN && SESSION_ID) {
   apiKey = API_KEY;
   sessionId = SESSION_ID;
   token = TOKEN;
   initializeSession();
 } else if (SAMPLE_SERVER_BASE_URL) {
-  // Make an Ajax request to get the OpenTok API key, session ID, and token from the server
   fetch(SAMPLE_SERVER_BASE_URL + '/room/ginix').then(function fetch(res) {
     return res.json();
   }).then(function fetchJson(json) {

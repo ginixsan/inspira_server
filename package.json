@@ -22,6 +22,7 @@
     "morgan": "^1.10.0",
     "opentok": "^2.10.0",
     "random-token": "0.0.8",
+    "redis": "^3.0.2",
     "serve-favicon": "~2.5.0"
   }
 }
