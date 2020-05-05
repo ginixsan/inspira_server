@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var RoomsSchema = new mongoose.Schema({  
   nombreSala: String,
   sessionId: String,
+  ownerId:mongoose.ObjectId,
   participants: [{
       email:String,
       token:String,
@@ -28,7 +29,7 @@ var RoomsSchema = new mongoose.Schema({
     },
     amount:Number
   }
-});
+},{timestamps:{ createdAt: 'creadaEn', updatedAt: 'modificadaEn' }});
 // Getter
 RoomsSchema.path('payment.amount').get(function(num) {
     return (num / 100).toFixed(2);
