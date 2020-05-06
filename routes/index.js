@@ -188,39 +188,37 @@ router.get('/room/:token', function (req, res) {
     }
   });
 });
-/*router.get('/room/:token', function (req, res) {
-  var token = req.params.token;
-  rooms.findOne({unifiedToken:token},function(err,habita){
-    if(habita)
-    {
-      console.log('el session id es '+habita.sessionId);
-      const sessionId=habita.sessionId;
-      const tokenOpen = opentok.generateToken(sessionId);
-      res.render('indexprofe',{ apiKey: apiKey,
-        sessionId: sessionId,
-        token: tokenOpen});
-      //res.sendFile(path.join(__dirname + '/app.js'));
-    }
-  });
-  
-  
-});*/
-router.get('/available/:token', function (req, res) {
+
+//ABRIR CERRAR UNA SALA ENVIADO EL TOKEN DEL PROFE!!
+//DEBERIA PASARSE A POST PARA MAS SEGURIDAD
+router.get('/close/:token', function (req, res) {
   console.log(req.params.token);
   var token = req.params.token;
-  rooms.findOne({unifiedToken:token},function(err,habita){
+  rooms.findOne({teacherToken:token},function(err,habita){
     if(habita)
     {
       console.log(habita);
       client.get(habita.unifiedToken,function(err,result){
         if(result)
         {
-          console.log(result);
-          res.redirect('/room/'+token);
-          /*res.send({
-            exists:true,
-            available:true
-          });*/
+          if(result.abierta===false)
+          {
+            result.abierta=true;
+          }
+          else
+          {
+            result.abierta=false;
+          }
+          
+          client.hmset(habita.unifiedToken, result,function(err,reply) {
+            console.log(reply);
+            res.send({
+              exists:true,
+              available:true,
+              full:false,
+              closed:result.abierta
+            });
+          });
         }
         else
         {
@@ -242,6 +240,9 @@ router.get('/available/:token', function (req, res) {
   
   
 });
+
+
+
 //get el form de acceso
 router.get('/acceso/:token',function(req,res){
   console.log('acceso a la sala '+req.params.token);
@@ -261,6 +262,66 @@ router.get('/acceso/:token',function(req,res){
     }
   });
 });
+
+
+//COMPRUEBA SI UNA SALA ESTA DISPONIBLE PARA ENTRAR
+// ABIERTA? DISPONIBLE? HAY HUECOS?
+router.get('/available/:token', function (req, res) {
+  console.log(req.params.token);
+  var token = req.params.token;
+  rooms.findOne({unifiedToken:token},function(err,habita){
+    if(habita)
+    {
+      console.log(habita);
+      client.get(habita.unifiedToken,function(err,result){
+        if(result)
+        {
+          if(result.abierta===true&&result.participantes>0)
+          {
+            console.log(result);
+            res.redirect('/room/'+token);
+          }
+          else
+          {
+            let llena=false;
+            if(result.participantes<=0)
+            {
+              llena=true;
+            }
+            //res.redirect('/room/'+token);
+            res.send({
+              exists:true,
+              available:true,
+              closed:result.abierta,
+              full:llena
+            });
+          }
+        }
+        else{
+          res.send({
+            exists:true,
+            available:false
+          });
+        }
+        
+      })
+    }
+    else
+    {
+      res.send({
+        exists:false
+      });
+    }
+  });
+  
+  
+});
+
+
+
+//MODIFICA UNA SALA SUMANDO O RESTANDO UN PARTICIPANTE
+//O EN CASO DE SER EL PROFE CREA O CIERRA LA SALA AL SALIR
+
 router.post('/available/', function (req, res) {
   var token = req.body.token;
   var available=req.body.available;
@@ -273,7 +334,7 @@ router.post('/available/', function (req, res) {
         {
           console.log(result);
           //la sala esta arrancada
-          if(result<=0)
+          if(result.participantes<=0)
           {
             //pero llena
             res.send({
@@ -284,16 +345,30 @@ router.post('/available/', function (req, res) {
           }
           else
           {
-            let participantes=available?result-1:result+1;
-            client.set(habita.unifiedToken,participantes,function(err,reply)
+            if(result.abierta==false)
             {
-              console.log(reply);
               res.send({
-                exists:true,
+                exists:true, 
                 available:true,
-                full:false
+                full:false,
+                closed:true
               });
-            })
+            }
+            else{
+              let participantes=available?result-1:result+1;
+              client.hmset(habita.unifiedToken, {
+                  'participantes': participantes,
+                  'abierta': true
+                  },function(err,reply) {
+                  console.log(reply);
+                  res.send({
+                    exists:true,
+                    available:true,
+                    full:false,
+                    closed:false
+                  });
+                });
+            }
           }
         }
       })
@@ -307,18 +382,22 @@ router.post('/available/', function (req, res) {
           {
             //es profe y entra
             let participantes=habita.maxParticipants-1;
-            client.set(habita.unifiedToken,participantes,function(err,reply)
-            {
+            client.hmset(habita.unifiedToken, {
+              'participantes': participantes,
+              'abierta': true
+              },function(err,reply) {
               console.log(reply);
               res.send({
                 exists:true,
                 available:true,
-                full:false
+                full:false,
+                closed:false
               });
-            })
+            });
           }
           else
           {
+            //SALE DE LA SALA PORQUE BORRAMOS DE LA CACHE LA SALA
             client.del(habita.unifiedToken, function(err, reply) {
               console.log(reply);
               res.send({
@@ -342,6 +421,7 @@ router.post('/available/', function (req, res) {
 });
 /**
  * POST /archive/start
+ * GRABA LA SALA
  */
 router.post('/archive/start', function (req, res) {
   var json = req.body;
@@ -360,6 +440,7 @@ router.post('/archive/start', function (req, res) {
 
 /**
  * POST /archive/:archiveId/stop
+ * PARA LA GRABACION
  */
 router.post('/archive/:archiveId/stop', function (req, res) {
   var archiveId = req.params.archiveId;
@@ -378,6 +459,7 @@ router.post('/archive/:archiveId/stop', function (req, res) {
 
 /**
  * GET /archive/:archiveId/view
+ * RECUPERA EL ARCHIVO PARA VER
  */
 router.get('/archive/:archiveId/view', function (req, res) {
   var archiveId = req.params.archiveId;
@@ -422,6 +504,7 @@ router.get('/archive/:archiveId', function (req, res) {
 
 /**
  * GET /archive
+ * RECUPERA TODOS LAS GRABACIONES
  */
 router.get('/archive', function (req, res) {
   var options = {};
