@@ -46,10 +46,47 @@ function initializeSession() {
   session.on('sessionConnected', function sessionDisconnected(event) {
     console.log('Me he conectado a la sesion.', event.reason);
     //LLAMA A REDIS Y DILE QUE TE HAS CONECTADO CON EL TOKEN
+    fetch("/available", {
+      method: "post",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "token":token,
+        "available":true
+      })
+    })
+    .then( (response) => { 
+      console.log(response);
+      //hagamos algo bonito que cambie el mundo y tratemos errores!!!
+    }).catch(function catchErr(error) {
+      handleError(error);
+      console.log(error);
+    });
+    
   });
   session.on('sessionDisconnected', function sessionDisconnected(event) {
     console.log('Me he desconectado de la sesion.', event.reason);
     //LLAMA A REDIS Y DILE QUE TE HAS DESCONECTADO
+    fetch("/available", {
+      method: "post",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "token":token,
+        "available":false
+      })
+    })
+    .then( (response) => { 
+      console.log(response);
+      //hagamos algo bonito que cambie el mundo y tratemos errores!!!
+    }).catch(function catchErr(error) {
+      handleError(error);
+      console.log(error);
+    });
   });
 
   var publisherOptions = {
@@ -57,7 +94,7 @@ function initializeSession() {
     width: '33%',
     height: '33%',
     resolution:'320x240',
-    name:'pepito',
+    name:'alumno',
     publishAudio:false,
     style:{nameDisplayMode:'on'}
   };

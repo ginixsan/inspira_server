@@ -9,7 +9,8 @@ const rooms = mongoose.model('rooms');
 const user= mongoose.model('users');
 var randomToken = require('random-token');
 const redis = require("redis");
-const client=redis.createClient({} )
+const REDIS_URL = process.env.REDIS_URL
+const client=redis.createClient({host:REDIS_URL} )
 client.on('error', function (err) {
   console.log('error event - ' + client.host + ':' + client.port + ' - ' + err);
 });
