@@ -78,9 +78,16 @@
         
         var tokenSala= <%-JSON.stringify(token)%>;
         console.log(tokenSala);
-        fetch("/available/"+tokenSala)
+        fetch("/available/"+tokenSala,{redirect: 'follow'})
             .then(function fetch(res) {
-                return res.json();
+                if (res.redirected) {
+                    window.location.href = res.url;
+                }
+                else
+                {
+                    return res.json();
+                }
+                
             }).then(function fetchJson(json) {
                 console.log(json);
                         if(json.available==true&&json.exists==true){

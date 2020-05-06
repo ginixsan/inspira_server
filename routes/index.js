@@ -216,13 +216,15 @@ router.get('/available/:token', function (req, res) {
         if(result)
         {
           console.log(result);
-          res.send({
+          res.redirect('/room/'+token);
+          /*res.send({
             exists:true,
             available:true
-          });
+          });*/
         }
         else
         {
+          //res.redirect('/room/'+token);
           res.send({
             exists:true,
             available:false
