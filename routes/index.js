@@ -7,6 +7,7 @@ var roomsModel = require('../models/rooms');
 let usersModel=require('../models/user');
 const rooms = mongoose.model('rooms');
 const user= mongoose.model('users');
+const entry=mongoose.model('entries');
 var randomToken = require('random-token');
 const redis = require("redis");
 const REDIS_URL = process.env.REDIS_URL
@@ -141,17 +142,35 @@ router.get('/stylesheets/app_alumno.css',function(req,res){
  */
 router.get('/room/:token', function (req, res) {
   var token = req.params.token;
+  
   rooms.findOne({unifiedToken:token},function(err,habita){
     if(habita)
     {
       //es alumno
-      console.log('el session id es '+habita.sessionId);
-      const sessionId=habita.sessionId;
-      const tokenOpen = opentok.generateToken(sessionId);
-      res.render('indexalumno',{ apiKey: apiKey,
-        sessionId: sessionId,
-        token: tokenOpen});
-      //res.sendFile(path.join(__dirname + '/app.js'));
+      let objetoModelo={
+        salaId:habita._id,
+        tokenEntrada:token,
+        nombreSala:habita.nombreSala,
+        entradaSalida:1
+      };
+      const entrada = new entry(objetoModelo);
+      entrada.save((err, result) => {
+        if (err) 
+        {
+          console.log(err);
+          const error= new Error(err);
+          error.status = 500;
+          return;
+        }
+        console.log('el session id es '+habita.sessionId);
+        const sessionId=habita.sessionId;
+        const tokenOpen = opentok.generateToken(sessionId);
+        console.log(result);
+        // generate token
+        res.render('indexalumno',{ apiKey: apiKey,
+          sessionId: sessionId,
+          token: tokenOpen});
+      });
     }
     else
     {
@@ -159,13 +178,29 @@ router.get('/room/:token', function (req, res) {
         if(habita)
         {
           //es profe
-          console.log('el session id es '+habita.sessionId);
-          const sessionId=habita.sessionId;
-          const tokenOpen = opentok.generateToken(sessionId);
-          res.render('indexprofe',{ apiKey: apiKey,
-            sessionId: sessionId,
-            token: tokenOpen});
-          //res.sendFile(path.join(__dirname + '/app.js'));
+          let objetoModelo={
+            salaId:habita._id,
+            tokenEntrada:token,
+            nombreSala:habita.nombreSala,
+            entradaSalida:1
+          };
+          const entrada = new entry(objetoModelo);
+          //REGISTRO ENTRADA
+          entrada.save((err, result) => {
+            if (err) 
+            {
+              console.log(err);
+              const error= new Error(err);
+              error.status = 500;
+              return;
+            }
+            console.log('el session id es '+habita.sessionId);
+            const sessionId=habita.sessionId;
+            const tokenOpen = opentok.generateToken(sessionId);
+            res.render('indexprofe',{ apiKey: apiKey,
+              sessionId: sessionId,
+              token: tokenOpen});
+            });
         }
         else
         {
@@ -269,6 +304,8 @@ router.get('/available/:token', function (req, res) {
           if(result.abierta===true&&result.participantes>0)
           {
             console.log(result);
+            //meter datos de usuario en BASE DE DATOS ANALYTICS
+
             res.redirect('/room/'+token);
           }
           else
