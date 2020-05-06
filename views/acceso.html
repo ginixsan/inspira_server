@@ -75,20 +75,30 @@
 </form>
 <%} else { %>
     <script>
+        
         var tokenSala= <%-JSON.stringify(token)%>;
+        console.log(tokenSala);
         fetch("/available/"+tokenSala)
-            .then( (response) => { 
-            console.log(response);
-            if(response.available==true){
-                window.location.replace("/room/"+tokenSala);
-            }
-            else
-            {
-                alert('la sala aun no esta abierta');
-            }
-            //hagamos algo bonito que cambie el mundo y tratemos errores!!!
+            .then(function fetch(res) {
+                return res.json();
+            }).then(function fetchJson(json) {
+                console.log(json);
+                        if(json.available==true&&json.exists==true){
+                            window.location.replace("/room/"+tokenSala);
+                        }
+                        else
+                        {
+                            if(json.available==false)
+                            {
+                                alert('la sala aun no esta abierta');
+                            }
+                            if(json.exists==false)
+                            {
+                                alert('la sala no existe');
+                            }
+                        }
             }).catch(function catchErr(error) {
-            handleError(error);
+            //handleError(error);
             console.log(error);
             });
        

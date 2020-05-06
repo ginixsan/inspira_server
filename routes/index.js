@@ -154,6 +154,7 @@ router.get('/room/:token', function (req, res) {
   rooms.findOne({unifiedToken:token},function(err,habita){
     if(habita)
     {
+      //es alumno
       console.log('el session id es '+habita.sessionId);
       const sessionId=habita.sessionId;
       const tokenOpen = opentok.generateToken(sessionId);
@@ -167,6 +168,7 @@ router.get('/room/:token', function (req, res) {
       rooms.findOne({teacherToken:token},function(err,habita){
         if(habita)
         {
+          //es profe
           console.log('el session id es '+habita.sessionId);
           const sessionId=habita.sessionId;
           const tokenOpen = opentok.generateToken(sessionId);
@@ -177,6 +179,7 @@ router.get('/room/:token', function (req, res) {
         }
         else
         {
+          //esta sala no existe
           res.send({
             exists:false
           })
