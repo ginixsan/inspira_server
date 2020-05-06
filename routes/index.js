@@ -12,13 +12,13 @@ const redis = require("redis");
 const REDIS_URL = process.env.REDIS_URL
 const client=redis.createClient({host:REDIS_URL} )
 client.on('error', function (err) {
-  console.log('error event - ' + client.host + ':' + client.port + ' - ' + err);
+  console.log('error redis evento - ' + client.host + ':' + client.port + ' - ' + err);
 });
 client.on('ready', function (err) {
-  console.log('conectado');
+  console.log('conectado a redis');
 });
 client.on('end', function (err) {
-  console.log('desconectado');
+  console.log('desconectado a redis');
 });
 
 var apiKey = process.env.TOKBOX_API_KEY;
