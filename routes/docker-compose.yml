@@ -1,0 +1,22 @@
+redis:
+    image: redis
+    container_name: cache
+    expose:
+      - 6379
+  app:
+    build: ./
+    volumes:
+      - ./:/var/www/app
+    links:
+      - redis
+    ports:
+      - 8080:8080
+    environment:
+      - REDIS_URL=redis://cache
+      - NODE_ENV=development
+      - TOKBOX_API_KEY=46707512
+      - TOKBOX_SECRET=71caf4c40baf65bbcd90fbee7d30cc5741a118e8
+      - MONGODB_URL=mongodb+srv://ginixsan:camaron@cluster0-hlbt7.mongodb.net/inspira?retryWrites=true&w=majority
+      - PORT=8080
+    command:
+      sh -c 'npm i && node server.js'
