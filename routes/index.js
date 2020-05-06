@@ -27,7 +27,7 @@ var secret = process.env.TOKBOX_SECRET;
 if (!apiKey || !secret) {
   console.error('=========================================================================================================');
   console.error('');
-  console.error('FALTA TOKBOX_API_KEY O TOKBOX_SECRET'!!!!);
+  console.error('FALTA TOKBOX_API_KEY O TOKBOX_SECRET!!!!');
   console.error('ESTA EL .env??? ', path.resolve('.env'), 'O LAS HAS PUESTO EN LAS VARIABLES DE ENTORNO???' );
   console.error('');
   console.error('=========================================================================================================');
@@ -37,29 +37,20 @@ if (!apiKey || !secret) {
 var OpenTok = require('opentok');
 var opentok = new OpenTok(apiKey, secret);
 
-// IMPORTANT: roomToSessionIdDictionary is a variable that associates room names with unique
-// unique sesssion IDs. However, since this is stored in memory, restarting your server will
-// reset these values if you want to have a room-to-session association in your production
-// application you should consider a more persistent storage
-
 var roomToSessionIdDictionary = {};
 
-// returns the room name, given a session ID that was associated with it
-function findRoomFromSessionId(sessionId) {
-  return _.findKey(roomToSessionIdDictionary, function (value) { return value === sessionId; });
-}
-
 router.get('/', function (req, res) {
+  //AQUI IRA EL HOME DE HOLACLASS!!!
   res.render('index', { title: 'Entrada',userId:'5eafecf7b440541b0369ee07'});
   //res.redirect('/room')
 });
 
-//crea habitacion
+//AQUI EL FORMULARIO PARA CREAR UNA HABITACION!!
 router.get('/room',function(req,res){
  res.render('crearclase',{title: 'Clase Espira'});
 });
 /**
- * GET /session redirects to /room/session
+ * GET /session ESTE NO SIRVE DE MOMENTO PERO REDIRIGE A /room/session
  */
 router.get('/session', function (req, res) {
   res.redirect('/room/session');
