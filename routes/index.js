@@ -8,7 +8,17 @@ let usersModel=require('../models/user');
 const rooms = mongoose.model('rooms');
 const user= mongoose.model('users');
 var randomToken = require('random-token');
-
+const redis = require("redis");
+const client=redis.createClient({} )
+client.on('error', function (err) {
+  console.log('error event - ' + client.host + ':' + client.port + ' - ' + err);
+});
+client.on('ready', function (err) {
+  console.log('conectado');
+});
+client.on('end', function (err) {
+  console.log('desconectado');
+});
 
 var apiKey = process.env.TOKBOX_API_KEY;
 var secret = process.env.TOKBOX_SECRET;
@@ -164,6 +174,12 @@ router.get('/room/:token', function (req, res) {
             token: tokenOpen});
           //res.sendFile(path.join(__dirname + '/app.js'));
         }
+        else
+        {
+          res.send({
+            exists:false
+          })
+        }
       });
     }
   });
@@ -186,37 +202,118 @@ router.get('/room/:token', function (req, res) {
   
 });*/
 router.get('/available/:token', function (req, res) {
+  console.log(req.params.token);
   var token = req.params.token;
   rooms.findOne({unifiedToken:token},function(err,habita){
     if(habita)
     {
-      console.log('el session id es '+habita.sessionId);
-      const sessionId=habita.sessionId;
-      const tokenOpen = opentok.generateToken(sessionId);
-      res.render('indexprofe',{ apiKey: apiKey,
-        sessionId: sessionId,
-        token: tokenOpen});
-      //res.sendFile(path.join(__dirname + '/app.js'));
+      console.log(habita);
+      client.get(habita.unifiedToken,function(err,result){
+        if(result)
+        {
+          console.log(result);
+          res.send({
+            exists:true,
+            available:true
+          });
+        }
+        else
+        {
+          res.send({
+            exists:true,
+            available:false
+          });
+        }
+      })
+    }
+    else
+    {
+      res.send({
+        exists:false
+      });
     }
   });
   
   
 });
-router.post('/available/:token', function (req, res) {
-  var token = req.params.token;
+router.post('/available/', function (req, res) {
+  var token = req.body.token;
+  var available=req.body.available;
   rooms.findOne({unifiedToken:token},function(err,habita){
     if(habita)
     {
-      console.log('el session id es '+habita.sessionId);
-      const sessionId=habita.sessionId;
-      const tokenOpen = opentok.generateToken(sessionId);
-      res.render('indexprofe',{ apiKey: apiKey,
-        sessionId: sessionId,
-        token: tokenOpen});
-      //res.sendFile(path.join(__dirname + '/app.js'));
+      //es alumno
+      client.get(habita.unifiedToken,function(err,result){
+        if(result)
+        {
+          console.log(result);
+          //la sala esta arrancada
+          if(result<=0)
+          {
+            //pero llena
+            res.send({
+              exists:true, 
+              available:true,
+              full:true
+            });
+          }
+          else
+          {
+            let participantes=available?result-1:result+1;
+            client.set(habita.unifiedToken,participantes,function(err,reply)
+            {
+              console.log(reply);
+              res.send({
+                exists:true,
+                available:true,
+                full:false
+              });
+            })
+          }
+        }
+      })
+    }
+    else
+    {
+      rooms.findOne({teacherToken:token},function(err,habita){
+        if(habita)
+        {
+          if(available===true)
+          {
+            //es profe y entra
+            let participantes=habita.maxParticipants-1;
+            client.set(habita.unifiedToken,participantes,function(err,reply)
+            {
+              console.log(reply);
+              res.send({
+                exists:true,
+                available:true,
+                full:false
+              });
+            })
+          }
+          else
+          {
+            client.del(habita.unifiedToken, function(err, reply) {
+              console.log(reply);
+              res.send({
+                exists:true,
+                available:false,
+                full:false
+              });
+          });
+          }
+          
+        }
+        else
+        {
+          res.send({
+            exists:false
+          });
+        }
+      });
     }
   });
-
 });
 /**
  * POST /archive/start

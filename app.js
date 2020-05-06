@@ -9,17 +9,7 @@ const index = require('./routes/index');
 const cors = require('cors');
 const app = express();
 app.engine('.html', require('ejs').__express);
-const redis = require("redis");
-const client=redis.createClient({host:'127.0.0.1'} )
-client.on('error', function (err) {
-  console.log('error event - ' + client.host + ':' + client.port + ' - ' + err);
-});
-client.on('ready', function (err) {
-  console.log('conectado');
-});
-client.on('end', function (err) {
-  console.log('desconectado');
-});
+
 // view engine setup
 //[path.join(__dirname, 'frontend'), path.join(__dirname, 'frontend/locked'), path.join(__dirname, 'frontend/template'), path.join(__dirname, 'frontend/public')]
 app.set('views', [path.join(__dirname, 'views'),path.join(__dirname, 'views/sala'),path.join(__dirname, 'views/profe'),path.join(__dirname, 'views/estudiante')]);
