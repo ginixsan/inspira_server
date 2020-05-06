@@ -27,9 +27,8 @@ var secret = process.env.TOKBOX_SECRET;
 if (!apiKey || !secret) {
   console.error('=========================================================================================================');
   console.error('');
-  console.error('Missing TOKBOX_API_KEY or TOKBOX_SECRET');
-  console.error('Find the appropriate values for these by logging into your TokBox Dashboard at: https://tokbox.com/account/#/');
-  console.error('Then add them to ', path.resolve('.env'), 'or as environment variables' );
+  console.error('FALTA TOKBOX_API_KEY O TOKBOX_SECRET'!!!!);
+  console.error('ESTA EL .env??? ', path.resolve('.env'), 'O LAS HAS PUESTO EN LAS VARIABLES DE ENTORNO???' );
   console.error('');
   console.error('=========================================================================================================');
   process.exit();
