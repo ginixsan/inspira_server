@@ -237,6 +237,25 @@ router.get('/available/:token', function (req, res) {
   
   
 });
+//get el form de acceso
+router.get('/acceso/:token',function(req,res){
+  console.log('acceso a la sala '+req.params.token);
+  var token = req.params.token;
+  rooms.findOne({unifiedToken:token},function(err,habita){
+    if(habita)
+    {
+      console.log('existe la habita')
+      console.log(habita);
+      res.render('acceso',{ nombreSala:habita.nombreSala,tipoPago:habita.payment.tipo,amount:habita.payment.amount,token:token});
+    }
+    else
+    {
+      res.send({
+        exists:false
+      });
+    }
+  });
+});
 router.post('/available/', function (req, res) {
   var token = req.body.token;
   var available=req.body.available;
