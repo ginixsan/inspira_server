@@ -126,18 +126,6 @@ router.post('/room',function (req, res) {
     });
  // }*/
 });
-router.get('/assets/app_profe.js',function(req,res){
-  res.sendFile(path.join(__dirname + '/app_profe.js'));
-});
-router.get('/stylesheets/app_profe.css',function(req,res){
-  res.sendFile(path.join(__dirname + '/app_profe.css'));
-});
-router.get('/assets/app_alumno.js',function(req,res){
-  res.sendFile(path.join(__dirname + '/app_profe.js'));
-});
-router.get('/stylesheets/app_alumno.css',function(req,res){
-  res.sendFile(path.join(__dirname + '/app_profe.css'));
-});
 /**
  * GET /room/:name
  */
