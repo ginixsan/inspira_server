@@ -3,7 +3,7 @@ var PizarraSchema = new mongoose.Schema({
   salaId: {
     type:mongoose.ObjectId,  
   },
-  blocks: [{}],
+  data: [{}],
   nombreArchivo:String 
 },{timestamps:{ createdAt: 'creadaEn', updatedAt: 'modificadaEn' }});
 mongoose.model('pizarras', PizarraSchema);
