@@ -7,8 +7,10 @@ const bodyParser = require('body-parser');
 const mongoose=require('mongoose');
 const index = require('./routes/index');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 const app = express();
 app.engine('.html', require('ejs').__express);
+
 
 // view engine setup
 //[path.join(__dirname, 'frontend'), path.join(__dirname, 'frontend/locked'), path.join(__dirname, 'frontend/template'), path.join(__dirname, 'frontend/public')]
@@ -18,7 +20,7 @@ console.log(path.join(__dirname, 'public'));
 app.set('view engine', 'html');
 
 app.use(cors());
-
+app.use(fileUpload());
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
