@@ -6,8 +6,10 @@ var mongoose = require('mongoose');
 let roomsModel = require('../models/rooms');
 let usersModel=require('../models/user');
 let entriesModel=require('../models/entries');
+let pizarrasModel=require('../models/pizarra');
 const rooms = mongoose.model('rooms');
 const user= mongoose.model('users');
+const pizarra=mongoose.model('pizarra')
 let entry=mongoose.model('entries');
 var randomToken = require('random-token');
 const redis = require("redis");
@@ -563,8 +565,8 @@ router.get('/archive', function (req, res) {
     res.send(archives);
   });
 });
-
-router.post('/notes',async function(req,res){
+//ruta antigua para subir notas
+router.post('/oldnotes',async function(req,res){
     try {
         if(!req.files) {
             res.send({
@@ -601,4 +603,25 @@ router.post('/notes',async function(req,res){
     }
  });
 
+ //ruta que guarda en la base de datos un documento creado especificamente para una sala
+ router.post('/notes',async function(req,res){
+  try {
+    const pizarra = new pizarra(req.body);
+    pizarra.save((err, pizarra) => {
+      if (err) 
+      {
+        console.log(err);
+        const error= new Error(err);
+        error.status = 500;
+        return;
+      }
+        console.log(pizarra);
+        let vuelta=pizareq.body;
+        vuelta.success=true;
+        res.send(vuelta);
+    });
+  } catch (err) {
+      res.status(500).send(err);
+  }
+});
 module.exports = router;

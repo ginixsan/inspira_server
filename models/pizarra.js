@@ -6,8 +6,8 @@ var PizarraSchema = new mongoose.Schema({
   data: {},
   nombreArchivo:String 
 },{timestamps:{ createdAt: 'creadaEn', updatedAt: 'modificadaEn' }});
-mongoose.model('pizarras', PizarraSchema);
-module.exports = mongoose.model('pizarras');
+mongoose.model('pizarra', PizarraSchema);
+module.exports = mongoose.model('pizarra');
 /*blocks: [
           {
             type: "header",
