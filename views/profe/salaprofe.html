@@ -476,8 +476,375 @@
                 socket.emit('actualiza', savedData);
             });
         });
+        //Icons
+        feather.replace();
+        var mic = 0;
+        var cam = 0;
+        var lock = 0;
+        var record = 0;
+        var rightmenufiles = 0;
+        var rightmenumusic = 0;
+        var rightmenuchat = 0;
+        var page = 1;
+        var newState = 0;
+        var grabacion;
+
+        // bottom menu anumation
+        //$('div.menuframe').css( 'bottom', '0');
+        /*
+        setTimeout(function () {
+            if (newState == 0) {
+                $('div.menuframe').css( 'bottom', '0');
+                newState = 1;
+            }
+        }, 500);
+        
+         <div class="alumno-video">
+                    <br><br><br><br>
+        </div>
+        */
+        $('div.menuframe').css('bottom', '0');
+
+        $(document).on("click", ".record", function () {
+            if (record == 0) {
+                $('.record .feather').remove();
+                $('.record').prepend('<i data-feather="circle"></i>');
+                feather.replace();
+                console.log('grabando');
+                fetch("/archive/start", {
+                    method: "post",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "sessionId": token
+                    })
+                }).then(function fetchJson(json) {
+                    if (json.success === true) {
+                        grabacion = json.archivo;
+                    }
+                    else {
+                        console.log('error ' + error)
+                    }
+                }).catch(function catchErr(error) {
+                    handleError(error);
+                    console.log(error);
+                });
+                record = 1;
+            } else {
+                $('.rec .feather').remove();
+                $('.rec').prepend('<i data-feather="circle"></i>');
+                feather.replace();
+                fetch("/archive/" + grabacion + "/stop", {
+                    method: "post",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        "sessionId": token
+                    })
+                }).then(function fetchJson(json) {
+                    if (json.success === true) {
+                        console.log('grabacion parada');
+                    }
+                    else {
+                        console.log('error ' + error)
+                    }
+                }).catch(function catchErr(error) {
+                    handleError(error);
+                    console.log(error);
+                });
+                record = 0;
+            }
+        });
+        $(document).on("click", ".mic", function () {
+            if (mic == 0) {
+                $('.mic .feather').remove();
+                $('.mic').prepend('<i data-feather="mic-off"></i>');
+                feather.replace();
+                mic = 1;
+            } else {
+                $('.mic .feather').remove();
+                $('.mic').prepend('<i data-feather="mic"></i>');
+                feather.replace();
+                mic = 0;
+            }
+        });
+
+        $(document).on("click", ".camera", function () {
+            if (cam == 0) {
+                $('.camera .feather').remove();
+                $('.camera').prepend('<i data-feather="video-off"></i>');
+                feather.replace();
+                cam = 1;
+            } else {
+                $('.camera .feather').remove();
+                $('.camera').prepend('<i data-feather="video"></i>');
+                feather.replace();
+                cam = 0;
+            }
+        });
+
+        $(document).on("click", ".lock", function () {
+            if (lock == 0) {
+                $('.lock .feather').remove();
+                $('.lock').prepend('<i data-feather="unlock"></i>');
+                $('.lock span.btntext').text('Unlock');
+                feather.replace();
+                lock = 1;
+            } else {
+                $('.lock .feather').remove();
+                $('.lock').prepend('<i data-feather="lock"></i>');
+                $('.lock span.btntext').text('Lock');
+                feather.replace();
+                lock = 0;
+            }
+        });
+
+
+
+
+        $(document).on("click", ".button.chat", function () {
+            $('.musicPanel').css('display', 'none');
+            $('.filesPanel').css('display', 'none');
+            $('.chatPanel').css('display', 'block');
+
+            $('div.RightMenuFullHeight.music').css('right', '-25%');
+            $('div.RightMenuFullHeight.files').css('right', '-25%');
+            $('div.RightMenuFullHeight.chat').css('right', '0');
+
+
+            if (rightmenuchat == 0) {
+                $('div.RightMenuFullHeight.music').css('right', '-25%');
+                $('div.RightMenuFullHeight.files').css('right', '-25%');
+                $('div.RightMenuFullHeight.chat').css('right', '0');
+                rightmenuchat = 1;
+                rightmenufiles = 0;
+                rightmenumusic = 0;
+            } else {
+                $('div.RightMenuFullHeight.music').css('right', '-25%');
+                $('div.RightMenuFullHeight.files').css('right', '-25%');
+                $('div.RightMenuFullHeight.chat').css('right', '-25%');
+                rightmenuchat = 0;
+            }
+
+        });
+
+        $(document).on("click", ".button.files", function () {
+            $('.musicPanel').css('display', 'none');
+            $('.chatPanel').css('display', 'none');
+            $('.filesPanel').css('display', 'block');
+
+            $('div.RightMenuFullHeight.music').css('right', '-25%');
+            $('div.RightMenuFullHeight.chat').css('right', '-25%');
+            $('div.RightMenuFullHeight.files').css('right', '0');
+
+
+            if (rightmenufiles == 0) {
+                $('div.RightMenuFullHeight.music').css('right', '-25%');
+                $('div.RightMenuFullHeight.chat').css('right', '-25%');
+                $('div.RightMenuFullHeight.files').css('right', '0');
+                rightmenufiles = 1;
+                rightmenumusic = 0;
+                rightmenuchat = 0;
+            } else {
+                $('div.RightMenuFullHeight.music').css('right', '-25%');
+                $('div.RightMenuFullHeight.chat').css('right', '-25%');
+                $('div.RightMenuFullHeight.files').css('right', '-25%');
+                rightmenufiles = 0;
+            }
+
+        });
+
+        $(document).on("click", ".button.music", function () {
+            $('.chatPanel').css('display', 'none');
+            $('.filesPanel').css('display', 'none');
+            $('.musicPanel').css('display', 'block');
+
+            $('div.RightMenuFullHeight.chat').css('right', '-25%');
+            $('div.RightMenuFullHeight.files').css('right', '-25%');
+            $('div.RightMenuFullHeight.music').css('right', '0');
+
+
+            if (rightmenumusic == 0) {
+                $('div.RightMenuFullHeight.chat').css('right', '-25%');
+                $('div.RightMenuFullHeight.files').css('right', '-25%');
+                $('div.RightMenuFullHeight.music').css('right', '0');
+                rightmenumusic = 1;
+                rightmenufiles = 0;
+                rightmenuchat = 0;
+            } else {
+                $('div.RightMenuFullHeight.chat').css('right', '-25%');
+                $('div.RightMenuFullHeight.files').css('right', '-25%');
+                $('div.RightMenuFullHeight.music').css('right', '-25%');
+                rightmenumusic = 0;
+            }
+
+        });
+
+
+
+
+        $('.profesor-board-vertical').css('display', 'none');
+        $('.profesor-board-horizontal').css('display', 'none');
+
+        $(document).on("click", ".filesul a.fullscreen", function () {
+
+            $('div.profesor-video').removeClass('horizontal');
+            $('div.profesor-video').removeClass('vertical');
+            $('div.profesor-video').addClass('fullscreen');
+            $('.profesor-board-vertical').css('display', 'none');
+            $('.profesor-board-horizontal').css('display', 'none');
+            $('div.RightMenuFullHeight.files').css('right', '-25%');
+
+        });
+
+        $(document).on("click", ".filesul a.horizontal", function () {
+
+            $('div.profesor-video').removeClass('fullscreen');
+            $('div.profesor-video').removeClass('vertical');
+            $('div.profesor-video').addClass('horizontal');
+            $('.profesor-board-vertical').css('display', 'none');
+            $('.profesor-board-horizontal').css('display', 'block');
+            $('div.RightMenuFullHeight.files').css('right', '-25%');
+
+        });
+
+        $(document).on("click", ".filesul a.vertical", function () {
+
+            $('div.profesor-video').removeClass('fullscreen');
+            $('div.profesor-video').removeClass('horizontal');
+            $('div.profesor-video').addClass('vertical');
+            $('.profesor-board-vertical').css('display', 'block');
+            $('.profesor-board-horizontal').css('display', 'none');
+            $('div.RightMenuFullHeight.files').css('right', '-25%');
+
+        });
+
+        $(document).on("click", ".displayblock", function () {
+            $('div.menuframe').css('bottom', '0');
+        });
+
+
+        $(document).on("click", ".class", function () {
+
+            var alumnos = 0;
+            $('div.profesor-video-miniframe').css('width', '99%');
+            $('div.profesor-video-miniframe').css('height', '99%');
+
+            var interval = setInterval(function () {
+                if (alumnos <= 49) {
+
+                    alumnos++;
+                    console.log(alumnos);
+
+                    if (alumnos == 1) {
+                        $('div.alumnosverticalalign.visible').css('margin-top', '9%');
+                        $('div.profesor-video-miniframe').css('width', '48%');
+                        $('div.profesor-video-miniframe').css('height', '47%');
+                        $('div.alumnosframe').append('<div class="alumno-video"><br><br><br><br></div>');
+                        $('div.alumno-video').css('width', '48%');
+                        $('div.alumno-video').css('height', '47%');
+                        $('.badgecounter .badge').text(alumnos);
+                    }
+
+
+                    if (alumnos == 2) {
+                        $('div.alumnosverticalalign.visible').css('margin-top', '8%');
+                        $('div.profesor-video-miniframe').css('width', '32%');
+                        $('div.profesor-video-miniframe').css('height', '31%');
+                        $('div.alumnosframe').append('<div class="alumno-video"><br><br><br><br></div>');
+                        $('div.alumno-video').css('width', '32%');
+                        $('div.alumno-video').css('height', '31%');
+                        $('.badgecounter .badge').text(alumnos);
+                    }
+                    /*
+                    if(alumnos == 3){ 
+                        $('div.profesor-video-miniframe').css('width', '23%'); 
+                        $('div.profesor-video-miniframe').css('height', '23%');
+                        $('div.alumnosframe').append('<div class="alumno-video"><br><br><br><br></div>');
+                        $('div.alumno-video').css('width', '23%');
+                        $('div.alumno-video').css('height', '23%');
+                    }
+                    */
+
+                    if (alumnos >= 3 && alumnos <= 6) {
+                        $('div.alumnosverticalalign.visible').css('margin-top', '6%');
+                        $('div.profesor-video-miniframe').css('width', '32%');
+                        $('div.profesor-video-miniframe').css('height', '31%');
+                        $('div.alumnosframe').append('<div class="alumno-video"><br><br><br><br></div>');
+                        $('div.alumno-video').css('width', '32%');
+                        $('div.alumno-video').css('height', '31%');
+                        $('.badgecounter .badge').text(alumnos);
+                    }
+
+
+                    if (alumnos >= 6 && alumnos <= 14) {
+                        $('div.alumnosverticalalign.visible').css('margin-top', '3%');
+                        $('div.profesor-video-miniframe').css('width', '23%');
+                        $('div.profesor-video-miniframe').css('height', '22%');
+                        $('div.alumnosframe').append('<div class="alumno-video"><br><br><br><br></div>');
+                        $('div.alumno-video').css('width', '23%');
+                        $('div.alumno-video').css('height', '22%');
+                        $('.badgecounter .badge').text(alumnos);
+                    }
+                    if (alumnos >= 15 && alumnos <= 23) {
+                        $('div.alumnosverticalalign.visible').css('margin-top', '2%');
+                        $('div.profesor-video-miniframe').css('width', '18%');
+                        $('div.profesor-video-miniframe').css('height', '17%');
+                        $('div.alumnosframe').append('<div class="alumno-video"><br><br><br><br></div>');
+                        $('div.alumno-video').css('width', '18%');
+                        $('div.alumno-video').css('height', '17%');
+                        $('.badgecounter .badge').text(alumnos);
+
+                    }
+                    if (alumnos >= 24 && alumnos <= 34) {
+                        $('div.alumnosverticalalign.visible').css('margin-top', '1%');
+                        $('div.profesor-video-miniframe').css('width', '14%');
+                        $('div.profesor-video-miniframe').css('height', '13%');
+                        $('div.alumnosframe').append('<div class="alumno-video"><br><br><br><br></div>');
+                        $('div.alumno-video').css('width', '14%');
+                        $('div.alumno-video').css('height', '13%');
+                        $('.badgecounter .badge').text(alumnos);
+
+                    }
+
+                    if (alumnos >= 35 && alumnos <= 55) {
+                        $('div.alumnosverticalalign.visible').css('margin-top', '0%');
+                        $('div.profesor-video-miniframe').css('width', '12%');
+                        $('div.profesor-video-miniframe').css('height', '11%');
+                        $('div.alumnosframe').append('<div class="alumno-video"><br><br><br><br></div>');
+                        $('div.alumno-video').css('width', '12%');
+                        $('div.alumno-video').css('height', '11%');
+                        $('.badgecounter .badge').text(alumnos);
+
+                    }
+
+
+                }
+                else {
+                    clearInterval(interval);
+                }
+            }, 1000);
+
+
+            if (page == 1) {
+                $('div.participants.profe').css('right', '100%');
+                $('div.participants.alumnos').css('right', '0');
+                page = 2;
+
+            } else {
+                $('div.participants.profe').css('right', '0');
+                $('div.participants.alumnos').css('right', '-100%');
+                page = 1;
+            }
+        });
+
     </script>
     <script type="text/javascript" src="../js/app_profe.js"></script>
+
 </body>
 
 </html>

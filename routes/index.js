@@ -4,17 +4,17 @@ var path = require('path');
 var _ = require('lodash');
 var mongoose = require('mongoose');
 let roomsModel = require('../models/rooms');
-let usersModel=require('../models/user');
-let entriesModel=require('../models/entries');
-let pizarrasModel=require('../models/pizarra');
+let usersModel = require('../models/user');
+let entriesModel = require('../models/entries');
+let pizarrasModel = require('../models/pizarra');
 const rooms = mongoose.model('rooms');
-const user= mongoose.model('users');
-const pizarra=mongoose.model('pizarra')
-let entry=mongoose.model('entries');
+const user = mongoose.model('users');
+const pizarra = mongoose.model('pizarra')
+let entry = mongoose.model('entries');
 var randomToken = require('random-token');
 const redis = require("redis");
 const REDIS_URL = process.env.REDIS_URL
-const client=redis.createClient({host:REDIS_URL} )
+const client = redis.createClient({ host: REDIS_URL })
 client.on('error', function (err) {
   console.log('error redis evento - ' + client.host + ':' + client.port + ' - ' + err);
 });
@@ -32,7 +32,7 @@ if (!apiKey || !secret) {
   console.error('=========================================================================================================');
   console.error('');
   console.error('FALTA TOKBOX_API_KEY O TOKBOX_SECRET!!!!');
-  console.error('ESTA EL .env??? ', path.resolve('.env'), 'O LAS HAS PUESTO EN LAS VARIABLES DE ENTORNO???' );
+  console.error('ESTA EL .env??? ', path.resolve('.env'), 'O LAS HAS PUESTO EN LAS VARIABLES DE ENTORNO???');
   console.error('');
   console.error('=========================================================================================================');
   process.exit();
@@ -45,13 +45,13 @@ var roomToSessionIdDictionary = {};
 
 router.get('/', function (req, res) {
   //AQUI IRA EL HOME DE HOLACLASS!!!
-  res.render('index', { title: 'Entrada',userId:'5eafecf7b440541b0369ee07'});
+  res.render('index', { title: 'Entrada', userId: '5eafecf7b440541b0369ee07' });
   //res.redirect('/room')
 });
 
 //AQUI EL FORMULARIO PARA CREAR UNA HABITACION!!
-router.get('/room',function(req,res){
- res.render('crearclase',{title: 'Clase Espira'});
+router.get('/room', function (req, res) {
+  res.render('crearclase', { title: 'Clase Espira' });
 });
 /**
  * GET /session ESTE NO SIRVE DE MOMENTO PERO REDIRIGE A /room/session
@@ -63,7 +63,7 @@ router.get('/session', function (req, res) {
  * POST /room/
  * crea una sala y guarda en BBDD los datos de la sala
  */
-router.post('/room',function (req, res) {
+router.post('/room', function (req, res) {
   var roomName = req.body.nombreSala;
   //console.log(req.body);
   console.log(roomName);
@@ -71,152 +71,145 @@ router.post('/room',function (req, res) {
   var sessionId;
   var token;
   console.log('creando sala con nombre: ' + roomName);
-    opentok.createSession({ mediaMode: 'routed' }, function (err, session) {
-      //const room = new rooms(req.body);
-      console.log(req.body); 
-      user.findOne({email:req.body.email},function(err,user)
-      {
-        let amount=req.body.amount;
-        if(user)
-        { 
-            
-          var tokenSala = randomToken(16);
-          var tokenProfe=randomToken(16);
-          console.log('el token '+token);
-          let arrayParticipants;
-          if(req.body.participants)
-          {
-            let participantes=req.body.participants;
-            participantes.map(item=>{
-              let tokenParticipant=randomToken(16)
-              let datosParticipant={
-                email:item,
-                token:tokenParticipant
-              }
-              arrayParticipants.push(datosParticipant);
-            });
+  opentok.createSession({ mediaMode: 'routed' }, function (err, session) {
+    //const room = new rooms(req.body);
+    console.log(req.body);
+    user.findOne({ email: req.body.email }, function (err, user) {
+      let amount = req.body.amount;
+      if (user) {
 
-          }
-          let objetoModelo={
-            ownerId:user._id,
-            nombreSala:req.body.nombreSala,
-            maxParticipants:req.body.maxParticipants,
-            sessionId:session.sessionId,
-            unifiedToken:tokenSala,
-            teacherToken:tokenProfe,
-            payment:{
-              tipo:req.body.tipoSala,
-              amount:amount
+        var tokenSala = randomToken(16);
+        var tokenProfe = randomToken(16);
+        console.log('el token ' + token);
+        let arrayParticipants;
+        if (req.body.participants) {
+          let participantes = req.body.participants;
+          participantes.map(item => {
+            let tokenParticipant = randomToken(16)
+            let datosParticipant = {
+              email: item,
+              token: tokenParticipant
             }
-          };
-          if(arrayParticipants)
-          {
-            objetoModelo.participants=arrayParticipants;
-          }
-          const room = new rooms(objetoModelo);
-          room.save((err, room) => {
-            if (err) 
-            {
-              console.log(err);
-              const error= new Error(err);
-              error.status = 500;
-              return;
-            }
-              console.log(room);
-              // generate token
-              token = opentok.generateToken(session.sessionId);
-              res.setHeader('Content-Type', 'application/json');
-              res.send({
-                apiKey: apiKey,
-                sessionId: session.sessionId,
-                token: token,
-                tokenSala:tokenProfe
-              });
+            arrayParticipants.push(datosParticipant);
           });
+
+        }
+        let objetoModelo = {
+          ownerId: user._id,
+          nombreSala: req.body.nombreSala,
+          maxParticipants: req.body.maxParticipants,
+          sessionId: session.sessionId,
+          unifiedToken: tokenSala,
+          teacherToken: tokenProfe,
+          payment: {
+            tipo: req.body.tipoSala,
+            amount: amount
+          }
+        };
+        if (arrayParticipants) {
+          objetoModelo.participants = arrayParticipants;
+        }
+        const room = new rooms(objetoModelo);
+        room.save((err, room) => {
           if (err) {
             console.log(err);
-            res.status(500).send({ error: 'createSession error:' + err });
+            const error = new Error(err);
+            error.status = 500;
             return;
           }
+          console.log(room);
+          // generate token
+          token = opentok.generateToken(session.sessionId);
+          res.setHeader('Content-Type', 'application/json');
+          res.send({
+            apiKey: apiKey,
+            sessionId: session.sessionId,
+            token: token,
+            tokenSala: tokenProfe
+          });
+        });
+        if (err) {
+          console.log(err);
+          res.status(500).send({ error: 'createSession error:' + err });
+          return;
         }
+      }
 
-      });
-      
     });
- // }*/
+
+  });
+  // }*/
 });
 /**
  * GET /room/:name
  */
 router.get('/room/:token', function (req, res) {
   var token = req.params.token;
-  
-  rooms.findOne({unifiedToken:token},function(err,habita){
-    if(habita)
-    {
+
+  rooms.findOne({ unifiedToken: token }, function (err, habita) {
+    if (habita) {
       //es alumno
-      let objetoModelo={
-        salaId:habita._id,
-        tokenEntrada:token,
-        nombreSala:habita.nombreSala,
-        entradaSalida:1
+      let objetoModelo = {
+        salaId: habita._id,
+        tokenEntrada: token,
+        nombreSala: habita.nombreSala,
+        entradaSalida: 1
       };
       const entrada = new entry(objetoModelo);
       entrada.save((err, result) => {
-        if (err) 
-        {
+        if (err) {
           console.log(err);
-          const error= new Error(err);
+          const error = new Error(err);
           error.status = 500;
           return;
         }
-        console.log('el session id es '+habita.sessionId);
-        const sessionId=habita.sessionId;
+        console.log('el session id es ' + habita.sessionId);
+        const sessionId = habita.sessionId;
         const tokenOpen = opentok.generateToken(sessionId);
         console.log(result);
         // generate token
-        res.render('indexalumno',{ apiKey: apiKey,
+        res.render('indexalumno', {
+          apiKey: apiKey,
           sessionId: sessionId,
           token: tokenOpen,
-          title:nombreSala});
+          title: nombreSala
+        });
       });
     }
-    else
-    {
-      rooms.findOne({teacherToken:token},function(err,habita){
-        if(habita)
-        {
+    else {
+      rooms.findOne({ teacherToken: token }, function (err, habita) {
+        if (habita) {
           //es profe
-          let objetoModelo={
-            salaId:habita._id,
-            tokenEntrada:token,
-            nombreSala:habita.nombreSala,
-            entradaSalida:1
+          let objetoModelo = {
+            salaId: habita._id,
+            tokenEntrada: token,
+            nombreSala: habita.nombreSala,
+            entradaSalida: 1
           };
           const entrada = new entry(objetoModelo);
           //REGISTRO ENTRADA
           entrada.save((err, result) => {
-            if (err) 
-            {
+            if (err) {
               console.log(err);
-              const error= new Error(err);
+              const error = new Error(err);
               error.status = 500;
               return;
             }
-            console.log('el session id es '+habita.sessionId);
-            const sessionId=habita.sessionId;
+            console.log('el session id es ' + habita.sessionId);
+            const sessionId = habita.sessionId;
             const tokenOpen = opentok.generateToken(sessionId);
-            res.render('indexprofe',{ apiKey: apiKey,
+            res.render('indexprofe', {
+              apiKey: apiKey,
               sessionId: sessionId,
               token: tokenOpen,
-              title:nombreSala});
+              title: nombreSala
             });
+          });
         }
-        else
-        {
+        else {
           //esta sala no existe
           res.send({
-            exists:false
+            exists: false
           })
         }
       });
@@ -229,70 +222,62 @@ router.get('/room/:token', function (req, res) {
 router.get('/close/:token', function (req, res) {
   console.log(req.params.token);
   var token = req.params.token;
-  rooms.findOne({teacherToken:token},function(err,habita){
-    if(habita)
-    {
+  rooms.findOne({ teacherToken: token }, function (err, habita) {
+    if (habita) {
       console.log(habita);
-      client.get(habita.unifiedToken,function(err,result){
-        if(result)
-        {
-          if(result.abierta===false)
-          {
-            result.abierta=true;
+      client.get(habita.unifiedToken, function (err, result) {
+        if (result) {
+          if (result.abierta === false) {
+            result.abierta = true;
           }
-          else
-          {
-            result.abierta=false;
+          else {
+            result.abierta = false;
           }
-          
-          client.hmset(habita.unifiedToken, result,function(err,reply) {
+
+          client.hmset(habita.unifiedToken, result, function (err, reply) {
             console.log(reply);
             res.send({
-              exists:true,
-              available:true,
-              full:false,
-              closed:result.abierta
+              exists: true,
+              available: true,
+              full: false,
+              closed: result.abierta
             });
           });
         }
-        else
-        {
+        else {
           //res.redirect('/room/'+token);
           res.send({
-            exists:true,
-            available:false
+            exists: true,
+            available: false
           });
         }
       })
     }
-    else
-    {
+    else {
       res.send({
-        exists:false
+        exists: false
       });
     }
   });
-  
-  
+
+
 });
 
 
 
 //get el form de acceso
-router.get('/acceso/:token',function(req,res){
-  console.log('acceso a la sala '+req.params.token);
+router.get('/acceso/:token', function (req, res) {
+  console.log('acceso a la sala ' + req.params.token);
   var token = req.params.token;
-  rooms.findOne({unifiedToken:token},function(err,habita){
-    if(habita)
-    {
+  rooms.findOne({ unifiedToken: token }, function (err, habita) {
+    if (habita) {
       console.log('existe la habita')
       console.log(habita);
-      res.render('acceso',{ nombreSala:habita.nombreSala,tipoPago:habita.payment.tipo,amount:habita.payment.amount,token:token});
+      res.render('acceso', { nombreSala: habita.nombreSala, tipoPago: habita.payment.tipo, amount: habita.payment.amount, token: token });
     }
-    else
-    {
+    else {
       res.send({
-        exists:false
+        exists: false
       });
     }
   });
@@ -304,54 +289,48 @@ router.get('/acceso/:token',function(req,res){
 router.get('/available/:token', function (req, res) {
   console.log(req.params.token);
   var token = req.params.token;
-  rooms.findOne({unifiedToken:token},function(err,habita){
-    if(habita)
-    {
+  rooms.findOne({ unifiedToken: token }, function (err, habita) {
+    if (habita) {
       console.log(habita);
-      client.get(habita.unifiedToken,function(err,result){
-        if(result)
-        {
-          if(result.abierta===true&&result.participantes>0)
-          {
+      client.get(habita.unifiedToken, function (err, result) {
+        if (result) {
+          if (result.abierta === true && result.participantes > 0) {
             console.log(result);
             //meter datos de usuario en BASE DE DATOS ANALYTICS
 
-            res.redirect('/room/'+token);
+            res.redirect('/room/' + token);
           }
-          else
-          {
-            let llena=false;
-            if(result.participantes<=0)
-            {
-              llena=true;
+          else {
+            let llena = false;
+            if (result.participantes <= 0) {
+              llena = true;
             }
             //res.redirect('/room/'+token);
             res.send({
-              exists:true,
-              available:true,
-              closed:result.abierta,
-              full:llena
+              exists: true,
+              available: true,
+              closed: result.abierta,
+              full: llena
             });
           }
         }
-        else{
+        else {
           res.send({
-            exists:true,
-            available:false
+            exists: true,
+            available: false
           });
         }
-        
+
       })
     }
-    else
-    {
+    else {
       res.send({
-        exists:false
+        exists: false
       });
     }
   });
-  
-  
+
+
 });
 
 
@@ -361,95 +340,85 @@ router.get('/available/:token', function (req, res) {
 
 router.post('/available/', function (req, res) {
   var token = req.body.token;
-  var available=req.body.available;
-  rooms.findOne({unifiedToken:token},function(err,habita){
-    if(habita)
-    {
+  var available = req.body.available;
+  rooms.findOne({ unifiedToken: token }, function (err, habita) {
+    if (habita) {
       //es alumno
-      client.get(habita.unifiedToken,function(err,result){
-        if(result)
-        {
+      client.get(habita.unifiedToken, function (err, result) {
+        if (result) {
           console.log(result);
           //la sala esta arrancada
-          if(result.participantes<=0)
-          {
+          if (result.participantes <= 0) {
             //pero llena
             res.send({
-              exists:true, 
-              available:true,
-              full:true
+              exists: true,
+              available: true,
+              full: true
             });
           }
-          else
-          {
-            if(result.abierta==false)
-            {
+          else {
+            if (result.abierta == false) {
               res.send({
-                exists:true, 
-                available:true,
-                full:false,
-                closed:true
+                exists: true,
+                available: true,
+                full: false,
+                closed: true
               });
             }
-            else{
-              let participantes=available?result-1:result+1;
+            else {
+              let participantes = available ? result - 1 : result + 1;
               client.hmset(habita.unifiedToken, {
-                  'participantes': participantes,
-                  'abierta': true
-                  },function(err,reply) {
-                  console.log(reply);
-                  res.send({
-                    exists:true,
-                    available:true,
-                    full:false,
-                    closed:false
-                  });
+                'participantes': participantes,
+                'abierta': true
+              }, function (err, reply) {
+                console.log(reply);
+                res.send({
+                  exists: true,
+                  available: true,
+                  full: false,
+                  closed: false
                 });
+              });
             }
           }
         }
       })
     }
-    else
-    {
-      rooms.findOne({teacherToken:token},function(err,habita){
-        if(habita)
-        {
-          if(available===true)
-          {
+    else {
+      rooms.findOne({ teacherToken: token }, function (err, habita) {
+        if (habita) {
+          if (available === true) {
             //es profe y entra
-            let participantes=habita.maxParticipants-1;
+            let participantes = habita.maxParticipants - 1;
             client.hmset(habita.unifiedToken, {
               'participantes': participantes,
               'abierta': true
-              },function(err,reply) {
+            }, function (err, reply) {
               console.log(reply);
               res.send({
-                exists:true,
-                available:true,
-                full:false,
-                closed:false
+                exists: true,
+                available: true,
+                full: false,
+                closed: false
               });
             });
           }
-          else
-          {
+          else {
             //SALE DE LA SALA PORQUE BORRAMOS DE LA CACHE LA SALA
-            client.del(habita.unifiedToken, function(err, reply) {
+            client.del(habita.unifiedToken, function (err, reply) {
               console.log(reply);
               res.send({
-                exists:true,
-                available:false,
-                full:false
+                exists: true,
+                available: false,
+                full: false
               });
-          });
+            });
           }
-          
+
         }
-        else
-        {
+        else {
           res.send({
-            exists:false
+            exists: false
           });
         }
       });
@@ -463,15 +432,18 @@ router.post('/available/', function (req, res) {
 router.post('/archive/start', function (req, res) {
   var json = req.body;
   var sessionId = json.sessionId;
-  opentok.startArchive(sessionId, { name: findRoomFromSessionId(sessionId) }, function (err, archive) {
+  opentok.startArchive(sessionId, { name: sessionId }, function (err, archive) {
     if (err) {
       console.error('error in startArchive');
       console.error(err);
-      res.status(500).send({ error: 'startArchive error:' + err });
+      res.status(500).send({ success: false, error: 'startArchive error:' + err });
       return;
     }
     res.setHeader('Content-Type', 'application/json');
-    res.send(archive);
+    res.send({
+      success: true,
+      archivo: archive.id
+    });
   });
 });
 
@@ -486,11 +458,13 @@ router.post('/archive/:archiveId/stop', function (req, res) {
     if (err) {
       console.error('error in stopArchive');
       console.error(err);
-      res.status(500).send({ error: 'stopArchive error:' + err });
+      res.status(500).send({ success: false, error: 'stopArchive error:' + err });
       return;
     }
     res.setHeader('Content-Type', 'application/json');
-    res.send(archive);
+    res.send({
+      success: true
+    });
   });
 });
 
@@ -568,62 +542,61 @@ router.get('/archive', function (req, res) {
   });
 });
 //ruta antigua para subir notas
-router.post('/oldnotes',async function(req,res){
-    try {
-        if(!req.files) {
-            res.send({
-                status: false,
-                message: 'No file uploaded'
-            });
-        } else {
-            let data = []; 
+router.post('/oldnotes', async function (req, res) {
+  try {
+    if (!req.files) {
+      res.send({
+        status: false,
+        message: 'No file uploaded'
+      });
+    } else {
+      let data = [];
 
-            //loop all files
-            _.forEach(_.keysIn(req.files.photos), (key) => {
-                let photo = req.files.photos[key];
-                
-                //move photo to uploads directory
-                photo.mv('./uploads/' + photo.name);
+      //loop all files
+      _.forEach(_.keysIn(req.files.photos), (key) => {
+        let photo = req.files.photos[key];
 
-                //push file details
-                data.push({
-                    name: photo.name,
-                    mimetype: photo.mimetype,
-                    size: photo.size
-                });
-            });
+        //move photo to uploads directory
+        photo.mv('./uploads/' + photo.name);
 
-            //return response
-            res.send({
-                status: true,
-                message: 'Files are uploaded',
-                data: data
-            });
-        }
-    } catch (err) {
-        res.status(500).send(err);
+        //push file details
+        data.push({
+          name: photo.name,
+          mimetype: photo.mimetype,
+          size: photo.size
+        });
+      });
+
+      //return response
+      res.send({
+        status: true,
+        message: 'Files are uploaded',
+        data: data
+      });
     }
- });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
- //ruta que guarda en la base de datos un documento creado especificamente para una sala
- router.post('/notes',async function(req,res){
+//ruta que guarda en la base de datos un documento creado especificamente para una sala
+router.post('/notes', async function (req, res) {
   try {
     const pizarra = new pizarra(req.body);
     pizarra.save((err, pizarra) => {
-      if (err) 
-      {
+      if (err) {
         console.log(err);
-        const error= new Error(err);
+        const error = new Error(err);
         error.status = 500;
         return;
       }
-        console.log(pizarra);
-        let vuelta=pizareq.body;
-        vuelta.success=true;
-        res.send(vuelta);
+      console.log(pizarra);
+      let vuelta = pizareq.body;
+      vuelta.success = true;
+      res.send(vuelta);
     });
   } catch (err) {
-      res.status(500).send(err);
+    res.status(500).send(err);
   }
 });
 module.exports = router;
