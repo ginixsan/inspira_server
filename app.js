@@ -8,7 +8,10 @@ const mongoose=require('mongoose');
 const index = require('./routes/index');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
+const rateLimiterRedisMiddleware = require('./middleware/rateLimiterRedis');
+
 const app = express();
+app.use(rateLimiterRedisMiddleware);
 app.engine('.html', require('ejs').__express);
 
 
