@@ -1,7 +1,4 @@
 
-var apiKey;
-var sessionId;
-var token;
 
 function handleError(error) {
   if (error) {
@@ -113,12 +110,8 @@ function initializeSession() {
     }
   });
 }
-API_KEY=apiKey;
-SESSION_ID=sessionId;
-TOKEN=token;
-if (API_KEY && TOKEN && SESSION_ID) {
-  apiKey = API_KEY;
-  sessionId = SESSION_ID;
-  token = TOKEN;
+
+if (apiKey && sessionId && token) {
+
   initializeSession();
 } 

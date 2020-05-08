@@ -11,7 +11,12 @@
         crossorigin="anonymous"></script>
     <script src="../js/json-preview.js"></script>
     <script src="../js/dom-to-image.min.js"></script>
-    <script src="../js/socket.io.js"></script>
+    <script>const apiKey =<%- JSON.stringify(apiKey) %>;
+        console.log(apiKey);
+        const sessionId =<%- JSON.stringify(sessionId) %>;
+        console.log(sessionId);
+        const token =<%- JSON.stringify(token) %>;
+        console.log(token);</script>
     <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
 
     <!-- Polyfill for fetch API so that we can fetch the sessionId and token in IE11 -->
@@ -291,32 +296,7 @@
             </div>
         </div>
     </div>
-    <div id="publisher"></div>
-    <div id="subscriber"></div>
-    <div class="pizarra">
-        <div class="pizarra__header">
 
-            <div class="pizarra__header-menu">
-            </div>
-        </div>
-        <div class="pizarra__content _pizarra__content--small">
-            <div id="editorjs" class="editor"></div>
-            <div class='botonera'>
-                <div class="pizarra__button" id="saveButton">
-                    GUARDAR
-                </div>
-                <div class="pizarra__button" id="deleteButton">
-                    BORRAR
-                </div>
-                <div class="pizarra__button" id="publicaButton">
-                    PUBLICAR
-                </div>
-            </div>
-        </div>
-        <div class="pizarra__output">
-            <pre class="pizarra__output-content" id="output"></pre>
-        </div>
-    </div>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script><!-- Header -->
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script><!-- Image -->
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script><!-- Delimiter -->
@@ -330,18 +310,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@latest"></script><!-- Warning -->
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script><!-- Marker -->
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script><!-- Inline Code -->
-    <script src="../js/editor.js"></script>
+    <script src="../js/editor_profe.js"></script>
     <script>
-        const apiKey =<% -JSON.stringify(apiKey) %>;
-        console.log(apiKey);
-        const sessionId =<% -JSON.stringify(sessionId) %>;
-        console.log(sessionId);
-        const token =<% -JSON.stringify(token) %>;
-        console.log(token);
-        const saveButton = document.getElementById('saveButton');
-        const publicaButton = document.getElementById('publicaButton');
-        const deleteButton = document.getElementById('deleteButton');
-        var socket;
         var editor = new EditorJS({
             holder: 'editorjs',
             tools: {
@@ -429,53 +399,14 @@
                 ]
             },
             onReady: function () {
-                socket = io('http://localhost:3000', { query: "tipo=profe" });
-                socket.on('connect', function () {
-                    editor.save().then((outputData) => {
-                        console.log('Article data: ', outputData);
-                        socket.emit('actualiza', outputData);
-                    }).catch((error) => {
-                        console.log('Saving failed: ', error)
-                    });
-                });
-                socket.on('actualizacliente', function (data) {
-                    console.log(data)
-                });
-                socket.on('disconnect', function () { });
-                saveButton.click();
+                console.log('estoy listo');
             },
             onChange: function () {
-                console.log('something changed');
-                editor.save().then((outputData) => {
-                    console.log('Article data: ', outputData);
-                    socket.emit('actualiza', outputData);
-                }).catch((error) => {
-                    console.log('Saving failed: ', error)
-                });
+                console.log('algo ha cambiado');
             }
         });
 
-        publicaButton.addEventListener('click', function () {
-            const textoImprime = document.getElementsByClassName('codex-editor__redactor')[0].innerHTML;
-            console.log(textoImprime);
-            domtoimage.toJpeg(document.getElementById('editorjs'), { quality: 0.95 })
-                .then(function (dataUrl) {
-                    var link = document.createElement('a');
-                    link.download = 'my-image-name.jpeg';
-                    link.href = dataUrl;
-                    link.click();
-                });
-        });
-        deleteButton.addEventListener('click', function () {
-            console.log('borro');
-            editor.clear();
-        });
-        saveButton.addEventListener('click', function () {
-            editor.save().then((savedData) => {
-                console.log('Article data: ', savedData);
-                socket.emit('actualiza', savedData);
-            });
-        });
+
         //Icons
         feather.replace();
         var mic = 0;

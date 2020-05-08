@@ -172,7 +172,7 @@ router.get('/room/:token', function (req, res) {
           apiKey: apiKey,
           sessionId: sessionId,
           token: tokenOpen,
-          title: nombreSala
+          title: habita.nombreSala
         });
       });
     }
@@ -198,12 +198,14 @@ router.get('/room/:token', function (req, res) {
             console.log('el session id es ' + habita.sessionId);
             const sessionId = habita.sessionId;
             const tokenOpen = opentok.generateToken(sessionId);
-            res.render('indexprofe', {
+            const envio = {
               apiKey: apiKey,
               sessionId: sessionId,
               token: tokenOpen,
-              title: nombreSala
-            });
+              title: habita.nombreSala
+            };
+            console.log(envio);
+            res.render('salaprofe', envio);
           });
         }
         else {
