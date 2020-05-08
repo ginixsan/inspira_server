@@ -30,16 +30,23 @@ function initializeSession() {
       preferredResolution:{width: 320, height: 240},
       insertDefaultUI:false
     };
+    console.log('streamCreated');
+    console.log(event);
+    var contenedorAlumno=document.createElement('div');
+      contenedorAlumno.id=event.stream.name; 
+      contenedorAlumno.class="alumno-video";
     var subscriber=session.subscribe(event.stream,subscriberOptions, handleError);
     subscriber.on('videoElementCreated', function(event) {
       let numeroAlumnos=document.getElementById('numeroAlumnos').innerHTML;
       numeroAlumnos=parseInt(numeroAlumnos);
       numeroAlumnos++;
       console.log('video element created');
-      console.log(event.element);
-      event.element.id=event.element.srcObject.id;
+      console.log(event);
+      //event.element.id=event.element.srcObject.id;
       event.element.poster="../img/coco.jpeg";
-      document.getElementById('videosAlumnos').appendChild(event.element);
+      
+      contenedorAlumno.appendChild(event.element);
+      document.getElementById('videosAlumnos').appendChild(contenedorAlumno);
       document.getElementById('numeroAlumnos').innerHTML=numeroAlumnos;
       document.getElementById('numeroAlumnosVideos').innerHTML=numeroAlumnos;
       
@@ -94,10 +101,13 @@ function initializeSession() {
     });
   });
   session.on("signal", function(event) {
-    console.log("Se ha enviado una señal desde " + event.from.id);
+    console.log("Se ha enviado una señal desde " + event.from);
     console.log(event.data);
     if(event.data.type==="manoLevantada"){
-      document.getElementById(event.from.id).setClass('alumno-video handup');
+      console.log('paso por mano levantada');
+      console.log(event);
+      var levantado=document.getElementById(event.data.id);
+      levantado.className='alumno-video handup';
 
     }
   });

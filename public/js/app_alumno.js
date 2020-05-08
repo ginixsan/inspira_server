@@ -109,7 +109,6 @@ function initializeSession() {
         {
           handleError(error);
         }
-        docReady(function() {
           let botonLevantaMano=document.getElementById('botonLevanta');
         
                 botonLevantaMano.onclick=function(){
@@ -119,6 +118,7 @@ function initializeSession() {
                     {
                       to: profeId,
                       data:{
+                        id:publisher.stream.name,
                         type:"manoLevantada",
                       }
                     },
@@ -132,7 +132,6 @@ function initializeSession() {
                   );
                   
                 };
-        });
        });
     }
   });
@@ -160,10 +159,10 @@ if (API_KEY && TOKEN && SESSION_ID) {
     alert('Failed to get opentok sessionId and token. Make sure you have updated the config.js file.');
   });
 }
-function docReady(fn) {
+/*function docReady(fn) {
   if (document.readyState === "complete" || document.readyState === "interactive") {
       setTimeout(fn, 1);
   } else {
       document.addEventListener("DOMContentLoaded", fn);
   }
-}    
+}  */  
