@@ -177,7 +177,8 @@ router.get('/room/:token', function (req, res) {
         // generate token
         res.render('indexalumno',{ apiKey: apiKey,
           sessionId: sessionId,
-          token: tokenOpen});
+          token: tokenOpen,
+          title:nombreSala});
       });
     }
     else
@@ -207,7 +208,8 @@ router.get('/room/:token', function (req, res) {
             const tokenOpen = opentok.generateToken(sessionId);
             res.render('indexprofe',{ apiKey: apiKey,
               sessionId: sessionId,
-              token: tokenOpen});
+              token: tokenOpen,
+              title:nombreSala});
             });
         }
         else

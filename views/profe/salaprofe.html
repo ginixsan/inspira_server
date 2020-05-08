@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Hola Class <%= title%></title>
+    <link href="../stylesheets/app_profe.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
+    <link href="../stylesheets/estilos_profe.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
+        integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
+        crossorigin="anonymous"></script>
+    <script src="../js/json-preview.js"></script>
+    <script src="../js/dom-to-image.min.js"></script>
+    <script src="../js/socket.io.js"></script>
+    <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+
+    <!-- Polyfill for fetch API so that we can fetch the sessionId and token in IE11 -->
+    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@7/dist/polyfill.min.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js" charset="utf-8"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>  -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../stylesheets/style_sala_profe.css">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+
+<body>
+    <div class="topmenuframe hidden">
+
+    </div>
+
+
+
+
+    <div class="slider visible">
+
+        <div id="participants" class="participants profe visible">
+
+
+            <div id="videoprofe" class="profesor-video">
+            </div>
+
+            <div id="editorjs" class="profesor-board-vertical visible">
+            </div>
+            <div class="profesor-board-horizontal visible">
+            </div>
+            <div class="participantsFrame visible">
+                <ul id="participants-list" class="participants">
+
+                </ul>
+            </div>
+
+
+
+        </div>
+
+
+
+        <div class="participants alumnos visible">
+            <div class="alumnosverticalalign visible">
+
+                <h3 class="badgecounter"><span class="badge badge-secondary">0</span></h3>
+
+                <div class="alumnosframe visible">
+                    <!--- profe --->
+                    <div class="profesor-video-miniframe">
+                        <br><br><br><br>
+                    </div>
+                    <!--- Alumnos --->
+                    <div class="alumno-video handup"><br><br><br><br></div>
+
+                    <div class="alumno-video talking"><br><br><br><br></div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+    <div class="RightMenuFullHeight files">
+
+        <!-- Files -->
+        <div class="filesPanel">
+            <ul class="filesul">
+                <li class="Titlefile">
+                    <h3>Files</h3> <span class="addnewfile"><i data-feather="plus"></i></span>
+                </li>
+                <li class="file">
+                    <a href="#" class="horizontal">Horizontal Lorem ipsum dolor. <span class="deletefile"><i
+                                data-feather="trash"></i></span></a>
+
+                </li>
+                <li class="file">
+                    <a href="#" class="vertical">Vertical Lorem ipsum dolor sit amet <span class="deletefile"><i
+                                data-feather="trash"></i></span></a>
+                </li>
+                <li class="file">
+                    <a href="#" class="fullscreen">Fullscreen consectetur adipiscing elit. <span class="deletefile"><i
+                                data-feather="trash"></i></span></a>
+                </li>
+                <li class="file">
+                    <a href="#" class="horizontal">Horizontal Lorem ipsum dolor. <span class="deletefile"><i
+                                data-feather="trash"></i></span></a>
+
+                </li>
+                <li class="file">
+                    <a href="#" class="vertical">Vertical Lorem ipsum dolor sit amet <span class="deletefile"><i
+                                data-feather="trash"></i></span></a>
+                </li>
+                <li class="file">
+                    <a href="#" class="fullscreen">Fullscreen consectetur adipiscing elit. <span class="deletefile"><i
+                                data-feather="trash"></i></span></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- Files -->
+
+    <!-- Music -->
+    <div class="RightMenuFullHeight music">
+        <div class="musicPanel">
+            <ul class="musicul">
+                <li class="Titlefile">
+                    <h3>Music</h3> <span class="addnewfile"></span>
+                </li>
+                <li class="musicfile">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <span
+                        class="time">2:33</span></li>
+                <li class="musicfile">Lorem ipsum dolor sit amet. <span class="time">2:33</span></li>
+                <li class="musicfile">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <span
+                        class="time">2:33</span></li>
+                <li class="musicfile">Lorem ipsum dolor sit amet. <span class="time">2:33</span></li>
+                <li class="musicfile">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <span
+                        class="time">2:33</span></li>
+                <li class="musicfile">Lorem ipsum dolor sit amet. <span class="time">2:33</span></li>
+                <li class="musicfile">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <span
+                        class="time">2:33</span></li>
+                <li class="musicfile">Lorem ipsum dolor sit amet. <span class="time">2:33</span></li>
+                <li class="musicfile">Lorem ipsum dolor sit amet, consectetur adipiscing elit. <span
+                        class="time">2:33</span></li>
+                <li class="musicfile">Lorem ipsum dolor sit amet. <span class="time">2:33</span></li>
+
+            </ul>
+        </div>
+    </div>
+    <!-- Music -->
+
+    <!-- chat -->
+    <div class="RightMenuFullHeight chat">
+        <div class="chatPanel ">
+            <nav class="nav nav-pills nav-justified">
+                <a class="nav-item nav-link active" id="chat-tab" data-toggle="tab" href="#chat0" role="tab"
+                    aria-controls="chat0" aria-selected="true">
+                    Chat 1 <span class="badge badge-pill badge-danger">12</span></a>
+                <a class="nav-item nav-link" id="chat-tab" data-toggle="tab" href="#chat1" role="tab"
+                    aria-controls="chat1" aria-selected="false">
+                    Chat 2 <span class="badge badge-pill badge-danger">5</span></a>
+                <a class="nav-item nav-link" id="chat-tab" data-toggle="tab" href="#chat2" role="tab"
+                    aria-controls="chat2" aria-selected="false">
+                    Chat 3 <span class="badge badge-pill badge-danger">3</span></a>
+            </nav>
+
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane chat-pane fade show active" id="chat0" role="tabpanel" aria-labelledby="chat-tab">
+                    <ul class="chatpanel">
+                        <li class="alumnotext"><span class="alumnobubble">alumno text</span></li>
+
+                        <li class="profetext"><span class="profebubble">profe text</span></li>
+                    </ul>
+
+                    <div class="chat-form">
+                        <input type="text" id="chat-field" class="chat-text inline-block" placeholder="Class Name">
+                        <button id="start-conferencing" class="inline-block">Send</button>
+                    </div>
+                </div>
+
+                <div class="tab-pane chat-pane fade show" id="chat1" role="tabpanel" aria-labelledby="chat-tab">2...
+
+                    <div class="chat-form">
+                        <input type="text" id="chat-field" class="chat-text inline-block" placeholder="Class Name">
+                        <button id="start-conferencing" class="inline-block">Send</button>
+                    </div>
+                </div>
+
+                <div class="tab-pane chat-pane fade show" id="chat2" role="tabpanel" aria-labelledby="chat-tab">3...
+
+                    <div class="chat-form">
+                        <input type="text" id="chat-field" class="chat-text inline-block" placeholder="Class Name">
+                        <button id="start-conferencing" class="inline-block">Send</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- chat -->
+
+    <div class="menuframe visible">
+        <div class="menuframeleft">
+
+
+            <div class="button chat" id="saveButton">
+                <span class="badge badge-pill badge-danger">15</span>
+                <i data-feather="message-square"></i>
+                <span class="btntext">Chat</span>
+            </div>
+
+            <div class="button files" id="saveButton">
+                <i data-feather="folder"></i>
+                <span class="btntext">Files</span>
+            </div>
+            <div class="button music" id="saveButton">
+                <i data-feather="music"></i>
+                <span class="btntext">Music</span>
+            </div>
+
+
+
+
+        </div>
+
+
+
+        <div class="menuframecenter">
+            <div class="button record" id="saveButton">
+                <i data-feather="circle"></i>
+                <span class="btntext">Record</span>
+            </div>
+            <div class="button mic" id="saveButton">
+                <i class="icon" data-feather="mic"></i>
+                <span class="btntext">Mute</span>
+            </div>
+
+            <div class="button add" id="saveButton">
+                <i data-feather="plus"></i>
+                <span class="btntext">Add</span>
+            </div>
+            <div class="button camera" id="saveButton">
+                <i data-feather="video"></i>
+                <span class="btntext">Camera</span>
+            </div>
+
+
+            <div class="button class" id="saveButton">
+                <span class="badge badge-pill badge-danger">17</span>
+                <i data-feather="grid"></i>
+                <span class="btntext">Class</span>
+            </div>
+        </div>
+
+
+
+        <div class="menuframeright">
+
+            <div class="button lock" id="saveButton">
+                <i data-feather="lock"></i>
+                <span class="btntext">Lock</span>
+            </div>
+
+            <div class="button payment" id="saveButton">
+                <i data-feather="dollar-sign"></i>
+                <span class="btntext">Payment</span>
+            </div>
+
+
+
+
+            <div class="btn-group dropup">
+                <div class="button settings" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    id="saveButton">
+                    <i data-feather="sliders"></i>
+                    <span class="btntext">Settings</span>
+                </div>
+
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Separated link</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="publisher"></div>
+    <div id="subscriber"></div>
+    <div class="pizarra">
+        <div class="pizarra__header">
+
+            <div class="pizarra__header-menu">
+            </div>
+        </div>
+        <div class="pizarra__content _pizarra__content--small">
+            <div id="editorjs" class="editor"></div>
+            <div class='botonera'>
+                <div class="pizarra__button" id="saveButton">
+                    GUARDAR
+                </div>
+                <div class="pizarra__button" id="deleteButton">
+                    BORRAR
+                </div>
+                <div class="pizarra__button" id="publicaButton">
+                    PUBLICAR
+                </div>
+            </div>
+        </div>
+        <div class="pizarra__output">
+            <pre class="pizarra__output-content" id="output"></pre>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script><!-- Header -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script><!-- Image -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script><!-- Delimiter -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script><!-- List -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script><!-- Checklist -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script><!-- Quote -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script><!-- Code -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script><!-- Embed -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script><!-- Table -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/link@latest"></script><!-- Link -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@latest"></script><!-- Warning -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script><!-- Marker -->
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script><!-- Inline Code -->
+    <script src="../js/editor.js"></script>
+    <script>
+        const apiKey =<% -JSON.stringify(apiKey) %>;
+        console.log(apiKey);
+        const sessionId =<% -JSON.stringify(sessionId) %>;
+        console.log(sessionId);
+        const token =<% -JSON.stringify(token) %>;
+        console.log(token);
+        const saveButton = document.getElementById('saveButton');
+        const publicaButton = document.getElementById('publicaButton');
+        const deleteButton = document.getElementById('deleteButton');
+        var socket;
+        var editor = new EditorJS({
+            holder: 'editorjs',
+            tools: {
+
+                header: {
+                    class: Header,
+                    inlineToolbar: ['link'],
+                    config: {
+                        placeholder: 'Header'
+                    },
+                    shortcut: 'CMD+SHIFT+H'
+                },
+                image: SimpleImage,
+
+                list: {
+                    class: List,
+                    inlineToolbar: true,
+                    shortcut: 'CMD+SHIFT+L'
+                },
+
+                checklist: {
+                    class: Checklist,
+                    inlineToolbar: true,
+                },
+
+                quote: {
+                    class: Quote,
+                    inlineToolbar: true,
+                    config: {
+                        quotePlaceholder: 'Enter a quote',
+                        captionPlaceholder: 'Quote\'s author',
+                    },
+                    shortcut: 'CMD+SHIFT+O'
+                },
+
+                warning: {
+                    class: Warning,
+                    inlineToolbar: true,
+                    shortcut: 'CMD+SHIFT+W',
+                    config: {
+                        titlePlaceholder: 'Title',
+                        messagePlaceholder: 'Message',
+                    }
+                },
+
+                marker: {
+                    class: Marker,
+                    shortcut: 'CMD+SHIFT+M'
+                },
+
+                code: {
+                    class: CodeTool,
+                    shortcut: 'CMD+SHIFT+C'
+                },
+
+                delimiter: Delimiter,
+
+                inlineCode: {
+                    class: InlineCode,
+                    shortcut: 'CMD+SHIFT+C'
+                },
+
+                linkTool: LinkTool,
+
+                embed: Embed,
+
+                table: {
+                    class: Table,
+                    inlineToolbar: true,
+                    shortcut: 'CMD+ALT+T'
+                },
+
+            },
+            initialBlock: 'paragraph',
+
+            data: {
+                blocks: [
+                    {
+                        type: "header",
+                        data: {
+                            text: "THIS IS YOUR EDITOR",
+                            level: 2
+                        }
+                    }
+                ]
+            },
+            onReady: function () {
+                socket = io('http://localhost:3000', { query: "tipo=profe" });
+                socket.on('connect', function () {
+                    editor.save().then((outputData) => {
+                        console.log('Article data: ', outputData);
+                        socket.emit('actualiza', outputData);
+                    }).catch((error) => {
+                        console.log('Saving failed: ', error)
+                    });
+                });
+                socket.on('actualizacliente', function (data) {
+                    console.log(data)
+                });
+                socket.on('disconnect', function () { });
+                saveButton.click();
+            },
+            onChange: function () {
+                console.log('something changed');
+                editor.save().then((outputData) => {
+                    console.log('Article data: ', outputData);
+                    socket.emit('actualiza', outputData);
+                }).catch((error) => {
+                    console.log('Saving failed: ', error)
+                });
+            }
+        });
+
+        publicaButton.addEventListener('click', function () {
+            const textoImprime = document.getElementsByClassName('codex-editor__redactor')[0].innerHTML;
+            console.log(textoImprime);
+            domtoimage.toJpeg(document.getElementById('editorjs'), { quality: 0.95 })
+                .then(function (dataUrl) {
+                    var link = document.createElement('a');
+                    link.download = 'my-image-name.jpeg';
+                    link.href = dataUrl;
+                    link.click();
+                });
+        });
+        deleteButton.addEventListener('click', function () {
+            console.log('borro');
+            editor.clear();
+        });
+        saveButton.addEventListener('click', function () {
+            editor.save().then((savedData) => {
+                console.log('Article data: ', savedData);
+                socket.emit('actualiza', savedData);
+            });
+        });
+    </script>
+    <script type="text/javascript" src="../js/app_profe.js"></script>
+</body>
+
+</html>

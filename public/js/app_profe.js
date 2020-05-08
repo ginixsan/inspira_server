@@ -30,9 +30,18 @@ function initializeSession() {
       insertMode: 'append',
       width: '33%',
       height: '33%',
-      preferredResolution:{width: 320, height: 240}
+      preferredResolution:{width: 320, height: 240},
+      insertDefaultUI:false
     };
-    session.subscribe(event.stream, 'subscriber', subscriberOptions, handleError);
+    var subscriber=session.subscribe(event.stream,subscriberOptions, handleError);
+    subscriber.on('videoElementCreated', function(event) {
+      var video=document.createElement('div');
+      video.setAttribute("id", "videoalumno34");
+      document.getElementsByClassName('div.alumnosframe').append(video);
+     // $('div.alumnosframe').append('<div class="alumno-video"><br><br><br><br></div>');
+
+      //document.getElementById('subscriber-video-parent-id').appendChild(event.element);
+    });
   });
   session.on('sessionConnected', function sessionDisconnected(event) {
     console.log('Me he conectado a la sesion.', event.reason);
@@ -87,9 +96,13 @@ function initializeSession() {
     width: '100%',
     height: '100%',
     resolution:'1280x720',
-    name:'Profe'
+    name:'Profe',
+    insertDefaultUI: false
   };
-  var publisher = OT.initPublisher('publisher', publisherOptions, handleError);
+  var publisher = OT.initPublisher(publisherOptions, handleError);
+  publisher.on('videoElementCreated', function(event) {
+    document.getElementById('videoprofe').appendChild(event.element);
+  });
 
   session.connect(token, function callback(error) {
     if (error) {
