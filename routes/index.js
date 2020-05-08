@@ -81,6 +81,20 @@ router.post('/room',function (req, res) {
           var tokenSala = randomToken(16);
           var tokenProfe=randomToken(16);
           console.log('el token '+token);
+          let arrayParticipants;
+          if(req.body.participants)
+          {
+            let participantes=req.body.participants;
+            participantes.map(item=>{
+              let tokenParticipant=randomToken(16)
+              let datosParticipant={
+                email:item,
+                token:tokenParticipant
+              }
+              arrayParticipants.push(datosParticipant);
+            });
+
+          }
           let objetoModelo={
             ownerId:user._id,
             nombreSala:req.body.nombreSala,
@@ -93,7 +107,10 @@ router.post('/room',function (req, res) {
               amount:amount
             }
           };
-          
+          if(arrayParticipants)
+          {
+            objetoModelo.participants=arrayParticipants;
+          }
           const room = new rooms(objetoModelo);
           room.save((err, room) => {
             if (err) 
