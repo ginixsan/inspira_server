@@ -35,6 +35,7 @@
 
     <link rel="stylesheet" href="../stylesheets/style_sala_profe.css">
     <script src="https://unpkg.com/feather-icons"></script>
+    <script type="text/javascript" src="../js/app_profe.js"></script>
 </head>
 
 <body>
@@ -99,24 +100,6 @@
             <ul class="filesul">
                 <li class="Titlefile">
                     <h3>Files</h3> <span class="addnewfile"><i data-feather="plus"></i></span>
-                </li>
-                <li class="file">
-                    <a href="#" class="horizontal">Horizontal Lorem ipsum dolor. <span class="deletefile"><i
-                                data-feather="trash"></i></span></a>
-
-                </li>
-                <li class="file">
-                    <a href="#" class="vertical">Vertical Lorem ipsum dolor sit amet <span class="deletefile"><i
-                                data-feather="trash"></i></span></a>
-                </li>
-                <li class="file">
-                    <a href="#" class="fullscreen">Fullscreen consectetur adipiscing elit. <span class="deletefile"><i
-                                data-feather="trash"></i></span></a>
-                </li>
-                <li class="file">
-                    <a href="#" class="horizontal">Horizontal Lorem ipsum dolor. <span class="deletefile"><i
-                                data-feather="trash"></i></span></a>
-
                 </li>
                 <li class="file">
                     <a href="#" class="vertical">Vertical Lorem ipsum dolor sit amet <span class="deletefile"><i
@@ -256,7 +239,7 @@
 
 
             <div class="button class" id="saveButton">
-                <span class="badge badge-pill badge-danger">17</span>
+                <span id="numeroAlumnos" class="badge badge-pill badge-danger">17</span>
                 <i data-feather="grid"></i>
                 <span class="btntext">Class</span>
             </div>
@@ -456,7 +439,7 @@
                         grabacion = json.archivo;
                     }
                     else {
-                        console.log('error ' + error)
+                        console.log('error ',json)
                     }
                 }).catch(function catchErr(error) {
                     handleError(error);
@@ -481,7 +464,7 @@
                         console.log('grabacion parada');
                     }
                     else {
-                        console.log('error ' + error)
+                        console.log('error ',json)
                     }
                 }).catch(function catchErr(error) {
                     handleError(error);
@@ -495,11 +478,13 @@
                 $('.mic .feather').remove();
                 $('.mic').prepend('<i data-feather="mic-off"></i>');
                 feather.replace();
+                muteaAudio(mic);
                 mic = 1;
             } else {
                 $('.mic .feather').remove();
                 $('.mic').prepend('<i data-feather="mic"></i>');
                 feather.replace();
+                muteaAudio(mic);
                 mic = 0;
             }
         });
@@ -509,11 +494,13 @@
                 $('.camera .feather').remove();
                 $('.camera').prepend('<i data-feather="video-off"></i>');
                 feather.replace();
+                muteVideo(cam);
                 cam = 1;
             } else {
                 $('.camera .feather').remove();
                 $('.camera').prepend('<i data-feather="video"></i>');
                 feather.replace();
+                muteVideo(cam);
                 cam = 0;
             }
         });
@@ -772,9 +759,12 @@
                 page = 1;
             }
         });
-
+        $( document ).ready(function() {
+            document.getElementById('numeroAlumnos').innerHTML="0";
+            console.log( "ready!" );
+        });
+        var publisher;
     </script>
-    <script type="text/javascript" src="../js/app_profe.js"></script>
 
 </body>
 

@@ -35,13 +35,18 @@ function initializeSession() {
       var video=document.createElement('div');
       video.setAttribute("id", "videoalumno34");
       document.getElementsByClassName('div.alumnosframe').append(video);
+      let numeroAlumnos=document.getElementById('numeroAlumnos').innerHTML;
+      numeroAlumnos=parseInt(numeroAlumnos);
+      numeroAlumnos++;
+      document.getElementById('numeroAlumnos').innerHTML=numeroAlumnos;
      // $('div.alumnosframe').append('<div class="alumno-video"><br><br><br><br></div>');
 
       //document.getElementById('subscriber-video-parent-id').appendChild(event.element);
     });
   });
   session.on('sessionConnected', function sessionDisconnected(event) {
-    console.log('Me he conectado a la sesion.', event.reason);
+    console.log('Me he conectado a la sesion.');
+    console.log(event);
     //LLAMA A REDIS Y DILE QUE TE HAS CONECTADO CON EL TOKEN
     fetch("/available", {
         method: "post",
@@ -96,9 +101,22 @@ function initializeSession() {
     name:'Profe',
     insertDefaultUI: false
   };
-  var publisher = OT.initPublisher(publisherOptions, handleError);
+   publisher = OT.initPublisher(publisherOptions, handleError);
+  
   publisher.on('videoElementCreated', function(event) {
+    console.log('video element created');
+    console.log(event.element);
+    event.element.id="videoprofesor";
+    event.element.poster="../img/coco.jpeg";
     document.getElementById('videoprofe').appendChild(event.element);
+  });
+  publisher.on('streamCreated',function(event){
+    console.log('creadoStream');
+    console.log(event);
+    if(event.stream.hasVideo===false)
+    {
+      $('button.camera').children().attr("disabled","disabled");
+    }
   });
 
   session.connect(token, function callback(error) {
@@ -115,3 +133,27 @@ if (apiKey && sessionId && token) {
 
   initializeSession();
 } 
+function muteaAudio(audio)
+{
+  console.log('voy a mutear/desmutear audio');
+  if(audio===0)
+  {
+    publisher.publishAudio(false);
+  }
+  else
+  {
+    publisher.publishAudio(false);
+  }
+}
+function muteVideo(video)
+{
+  console.log('voy a mutear/desmutear video');
+  if(video===0)
+  {
+    publisher.publishVideo(false);
+  }
+  else
+  {
+    publisher.publishVideo(false);
+  }
+}
