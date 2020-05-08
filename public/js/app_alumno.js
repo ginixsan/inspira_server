@@ -21,7 +21,7 @@ function initializeSession() {
     if(event.stream.name==='Profe')
     {
       console.log(event.stream.connection.connectionId);
-      profeId=event.stream.connection.connectionId;
+      profeId=event.stream.connection;
       var subscriberOptions = {
         insertMode: 'append',
         width: '100%',
@@ -117,8 +117,10 @@ function initializeSession() {
                   console.log(profeId);
                   session.signal(
                     {
-                      //to: profeId,
-                      data:"manoLevantada"
+                      to: profeId,
+                      data:{
+                        type:"manoLevantada",
+                      }
                     },
                     function(error) {
                       if (error) {

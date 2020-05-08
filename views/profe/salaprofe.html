@@ -69,21 +69,21 @@
         </div>
 
 
-
+        <!-- LA PARTE DE LOS ALUMNOS-->
         <div class="participants alumnos visible">
             <div class="alumnosverticalalign visible">
 
-                <h3 class="badgecounter"><span class="badge badge-secondary">0</span></h3>
+                <h3 class="badgecounter"><span id="numeroAlumnosVideos" class="badge badge-secondary">0</span></h3>
 
-                <div class="alumnosframe visible">
+                <div id="videosAlumnos" class="alumnosframe visible">
                     <!--- profe --->
-                    <div class="profesor-video-miniframe">
-                        <br><br><br><br>
+                    <div id="videoProfeAlumnos" class="profesor-video-miniframe">
                     </div>
-                    <!--- Alumnos --->
+                    <!--- Alumnos 
                     <div class="alumno-video handup"><br><br><br><br></div>
 
                     <div class="alumno-video talking"><br><br><br><br></div>
+                    --->
                 </div>
             </div>
         </div>
@@ -648,11 +648,11 @@
 
         $(document).on("click", ".class", function () {
 
-            var alumnos = 0;
+            var alumnos = parseInt(document.getElementById('numeroAlumnos').innerHTML);
             $('div.profesor-video-miniframe').css('width', '99%');
             $('div.profesor-video-miniframe').css('height', '99%');
 
-            var interval = setInterval(function () {
+            /*var interval = setInterval(function () {
                 if (alumnos <= 49) {
 
                     alumnos++;
@@ -686,7 +686,7 @@
                         $('div.alumno-video').css('width', '23%');
                         $('div.alumno-video').css('height', '23%');
                     }
-                    */
+                    
 
                     if (alumnos >= 3 && alumnos <= 6) {
                         $('div.alumnosverticalalign.visible').css('margin-top', '6%');
@@ -745,7 +745,7 @@
                 else {
                     clearInterval(interval);
                 }
-            }, 1000);
+            }, 1000);*/
 
 
             if (page == 1) {

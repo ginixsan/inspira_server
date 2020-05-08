@@ -32,13 +32,17 @@ function initializeSession() {
     };
     var subscriber=session.subscribe(event.stream,subscriberOptions, handleError);
     subscriber.on('videoElementCreated', function(event) {
-      var video=document.createElement('div');
-      video.setAttribute("id", "videoalumno34");
-      document.getElementsByClassName('div.alumnosframe').append(video);
       let numeroAlumnos=document.getElementById('numeroAlumnos').innerHTML;
       numeroAlumnos=parseInt(numeroAlumnos);
       numeroAlumnos++;
+      console.log('video element created');
+      console.log(event.element);
+      event.element.id=event.element.srcObject.id;
+      event.element.poster="../img/coco.jpeg";
+      document.getElementById('videosAlumnos').appendChild(event.element);
       document.getElementById('numeroAlumnos').innerHTML=numeroAlumnos;
+      document.getElementById('numeroAlumnosVideos').innerHTML=numeroAlumnos;
+      
      // $('div.alumnosframe').append('<div class="alumno-video"><br><br><br><br></div>');
 
       //document.getElementById('subscriber-video-parent-id').appendChild(event.element);
@@ -92,6 +96,10 @@ function initializeSession() {
   session.on("signal", function(event) {
     console.log("Se ha enviado una señal desde " + event.from.id);
     console.log(event.data);
+    if(event.data.type==="manoLevantada"){
+      document.getElementById(event.from.id).setClass('alumno-video handup');
+
+    }
   });
   var publisherOptions = {
     insertMode: 'append',
@@ -109,6 +117,8 @@ function initializeSession() {
     event.element.id="videoprofesor";
     event.element.poster="../img/coco.jpeg";
     document.getElementById('videoprofe').appendChild(event.element);
+    document.getElementById('videoProfeAlumnos').appendChild(event.element);
+
   });
   publisher.on('streamCreated',function(event){
     console.log('creadoStream');
