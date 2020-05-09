@@ -251,7 +251,7 @@
 
             <div class="button lock" id="saveButton">
                 <i data-feather="lock"></i>
-                <span class="btntext">Lock</span>
+                <span id="candado" class="btntext">Lock</span>
             </div>
 
             <div class="button payment" id="saveButton">
@@ -511,12 +511,14 @@
                 $('.lock').prepend('<i data-feather="unlock"></i>');
                 $('.lock span.btntext').text('Unlock');
                 feather.replace();
+                lockRoom(lock);
                 lock = 1;
             } else {
                 $('.lock .feather').remove();
                 $('.lock').prepend('<i data-feather="lock"></i>');
                 $('.lock span.btntext').text('Lock');
                 feather.replace();
+                lockRoom(lock);
                 lock = 0;
             }
         });

@@ -337,3 +337,75 @@ function muteVideo(video)
     publisher.publishVideo(false);
   }
 }
+function lockRoom(lock)
+{
+  console.log('voy a cerrar/abrir sala');
+  if(lock===0)
+  {
+    fetch("/close",{
+      method: "post",
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          "token": token
+      })
+      }).then(function fetch(res) {
+                    return res.json();
+        }).then(function fetchJson(json) {
+            console.log(json);
+                    if(json.available==true&&json.exists==true){
+                        console.log('sala abierta '+json.closed);
+                    }
+                    else
+                    {
+                        if(json.available==false)
+                        {
+                            alert('la sala aun no esta abierta');
+                        }
+                        if(json.exists==false)
+                        {
+                            alert('la sala no existe');
+                        }
+                    }
+        }).catch(function catchErr(error) {
+        //handleError(error);
+        console.log(error);
+        });
+}
+  else
+  {
+    fetch("/close",{
+      method: "post",
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+          "token": token
+      })
+      }).then(function fetch(res) {
+                    return res.json();
+        }).then(function fetchJson(json) {
+            console.log(json);
+                    if(json.available==true&&json.exists==true){
+                        console.log('sala abierta '+json.closed);
+                    }
+                    else
+                    {
+                        if(json.available==false)
+                        {
+                            alert('la sala aun no esta abierta');
+                        }
+                        if(json.exists==false)
+                        {
+                            alert('la sala no existe');
+                        }
+                    }
+        }).catch(function catchErr(error) {
+        //handleError(error);
+        console.log(error);
+        });
+  }
+}

@@ -221,9 +221,9 @@ router.get('/room/:token', function (req, res) {
 
 //ABRIR CERRAR UNA SALA ENVIADO EL TOKEN DEL PROFE!!
 //DEBERIA PASARSE A POST PARA MAS SEGURIDAD
-router.get('/close/:token', function (req, res) {
-  console.log(req.params.token);
-  var token = req.params.token;
+router.post('/close', function (req, res) {
+  console.log(req.body.token);
+  var token = req.body.token;
   rooms.findOne({ teacherToken: token }, function (err, habita) {
     if (habita) {
       console.log(habita);
