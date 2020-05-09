@@ -210,64 +210,73 @@ function initializeSession() {
   session.on("signal", function(event) {
     console.log("Se ha enviado una señal desde " + event.from);
     console.log(event.data);
-    if(event.data.type==="manoLevantada"){
-      console.log('paso por mano levantada');
-      console.log(event);
-      var levantado=document.getElementById(event.data.id);
-      levantado.className='alumno-video handup';
-      levantado.addEventListener('click',function(e,conexion){
-        switch (levantado.className) {
-          //alumno-video
-          case 'alumno-video handup':
-            levantado.className='alumno-video talking';
-            let envioConexion=buscaEnArray(event.data.id,arrayConexiones);
-            session.signal(
-              {
-                to: envioConexion,
-                data:{
-                  id:'profe',
-                  type:"unmute",
-                }
-              },
-              function(error) {
-                if (error) {
-                  console.log("signal error ("+ error.name+ "): " + error.message);
-                } else {
-                  console.log("signal sent.");
-                }
-              }
-            );
-            break;
-          case 'alumno-video talking':
-              levantado.className='alumno-video';
-              session.signal(
-                {
-                  to: envioConexion,
-                  data:{
-                    id:'profe',
-                    type:"mute",
+    switch (event.data.type) {
+      case "manoLevantada":
+          console.log('paso por mano levantada');
+          console.log(event);
+          var levantado=document.getElementById(event.data.id);
+          levantado.className='alumno-video handup';
+          levantado.addEventListener('click',function(e,conexion){
+            switch (levantado.className) {
+              //alumno-video
+              case 'alumno-video handup':
+                levantado.className='alumno-video talking';
+                let envioConexion=buscaEnArray(event.data.id,arrayConexiones);
+                session.signal(
+                  {
+                    to: envioConexion,
+                    data:{
+                      id:'profe',
+                      type:"unmute",
+                    }
+                  },
+                  function(error) {
+                    if (error) {
+                      console.log("signal error ("+ error.name+ "): " + error.message);
+                    } else {
+                      console.log("signal sent.");
+                    }
                   }
-                },
-                function(error) {
-                  if (error) {
-                    console.log("signal error ("+ error.name+ "): " + error.message);
-                  } else {
-                    console.log("signal sent.");
-                    levantado.removeEventListener('click',function(e){
-                      console.log('ya ni habla ni nada quito listener');
-                    })
-                  }
-                }
-              );
-              break;
-          default:
-            break;
-        }
+                );
+                break;
+              case 'alumno-video talking':
+                  levantado.className='alumno-video';
+                  session.signal(
+                    {
+                      to: envioConexion,
+                      data:{
+                        id:'profe',
+                        type:"mute",
+                      }
+                    },
+                    function(error) {
+                      if (error) {
+                        console.log("signal error ("+ error.name+ "): " + error.message);
+                      } else {
+                        console.log("signal sent.");
+                        levantado.removeEventListener('click',function(e){
+                          console.log('ya ni habla ni nada quito listener');
+                        })
+                      }
+                    }
+                  );
+                  break;
+              default:
+                break;
+            }
+            
+    
+          });
+    
         
-
-      });
-
+        break;
+      case "chatMessage":
+        console.log('chat de '+event.data.id);
+        break;
+      default:
+          break;
     }
+    
   });
   var publisherOptions = {
     insertMode: 'append',
@@ -408,4 +417,23 @@ function lockRoom(lock)
         console.log(error);
         });
   }
+}
+function enviaPizarra(datos)
+{
+  console.log('envio los datos de la pizarra');
+  session.signal(
+    {
+      type:'pizarra',
+      datos:data
+    },
+    function(error) {
+      if (error) {
+        console.log("signal error ("+ error.name+ "): " + error.message);
+      } else {
+        console.log("signal sent.");
+      }
+    }
+  );
+  
+};
 }
