@@ -428,7 +428,7 @@ router.post('/available/', function (req, res) {
   });
 });
 /**
- * POST /archive/start
+ * 
  * GRABA LA SALA
  */
 router.post('/archive/start', function (req, res) {
@@ -450,7 +450,6 @@ router.post('/archive/start', function (req, res) {
 });
 
 /**
- * POST /archive/:archiveId/stop
  * PARA LA GRABACION
  */
 router.post('/archive/:archiveId/stop', function (req, res) {
@@ -471,7 +470,6 @@ router.post('/archive/:archiveId/stop', function (req, res) {
 });
 
 /**
- * GET /archive/:archiveId/view
  * RECUPERA EL ARCHIVO PARA VER
  */
 router.get('/archive/:archiveId/view', function (req, res) {
@@ -499,7 +497,6 @@ router.get('/archive/:archiveId/view', function (req, res) {
 router.get('/archive/:archiveId', function (req, res) {
   var archiveId = req.params.archiveId;
 
-  // fetch archive
   console.log('attempting to fetch archive: ' + archiveId);
   opentok.getArchive(archiveId, function (err, archive) {
     if (err) {
@@ -509,14 +506,12 @@ router.get('/archive/:archiveId', function (req, res) {
       return;
     }
 
-    // extract as a JSON object
     res.setHeader('Content-Type', 'application/json');
     res.send(archive);
   });
 });
 
 /**
- * GET /archive
  * RECUPERA TODOS LAS GRABACIONES
  */
 router.get('/archive', function (req, res) {
@@ -528,17 +523,15 @@ router.get('/archive', function (req, res) {
     options.offset = req.query.offset;
   }
 
-  // list archives
   console.log('attempting to list archives');
   opentok.listArchives(options, function (err, archives) {
     if (err) {
-      console.error('error in listArchives');
+      console.error('error in listArchives'); 
       console.error(err);
       res.status(500).send({ error: 'infoArchive error:' + err });
       return;
     }
 
-    // extract as a JSON object
     res.setHeader('Content-Type', 'application/json');
     res.send(archives);
   });
@@ -554,14 +547,11 @@ router.post('/oldnotes', async function (req, res) {
     } else {
       let data = [];
 
-      //loop all files
       _.forEach(_.keysIn(req.files.photos), (key) => {
         let photo = req.files.photos[key];
 
-        //move photo to uploads directory
         photo.mv('./uploads/' + photo.name);
 
-        //push file details
         data.push({
           name: photo.name,
           mimetype: photo.mimetype,
@@ -569,7 +559,6 @@ router.post('/oldnotes', async function (req, res) {
         });
       });
 
-      //return response
       res.send({
         status: true,
         message: 'Files are uploaded',
