@@ -56,6 +56,11 @@ function initializeSession() {
       //document.getElementById('subscriber-video-parent-id').appendChild(event.element);
     });
   });
+  session.on('streamDestroyed',function streamDestroyed(event){
+    console.log(event);
+    let aborrar=document.getElementById(event.stream.connection.id);
+    aborrar.remove();
+  });
   session.on('sessionConnected', function sessionDisconnected(event) {
     console.log('Me he conectado a la sesion.');
     console.log(event);
