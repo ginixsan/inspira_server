@@ -18,6 +18,14 @@ body, html {
     z-index: 10;
     display: flex;
 }
+.editor {
+    background-color:lightgray;
+    pointer-events:none;
+    position: absolute;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+  }
 #publisher {
     position: absolute;
     width: 50%;

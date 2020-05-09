@@ -55,7 +55,9 @@ function initializeSession() {
         console.log('unmute');
         break;
       case 'pizarra':
-        console.log('actualiza pizarra con '+event.data.datos)
+        console.log('actualiza pizarra con '+event.data.datos);
+        editor.clear();
+        editor.render(event.data.datos);
         break;
       default:
         break;

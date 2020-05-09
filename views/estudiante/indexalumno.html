@@ -54,7 +54,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script><!-- Marker -->
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script><!-- Inline Code -->
   
-    <script src="../js/editor.js"></script>
+    <script src="../js/editor_alumno.js"></script>
     <script>
         var apiKey=<%-JSON.stringify(apiKey)%>;
         console.log(apiKey);
@@ -142,15 +142,7 @@
         data:{
         },
           onReady: function(){
-            var socket = io('http://localhost:3000',{ query: "tipo=estudiante" });
-            socket.on('connect', function(){});
-            socket.on('actualizacliente', function(data){
-              editor.clear();
-              editor.render(data);
-              console.log(data);
-            });
-            socket.on('event', function(data){});
-            socket.on('disconnect', function(){});
+            console.log('editor listo');
           },
           onChange: function() {
             console.log('something changed');
