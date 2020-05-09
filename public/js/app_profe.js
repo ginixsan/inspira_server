@@ -1,9 +1,101 @@
-
+var arrayConexiones=[];
 
 function handleError(error) {
   if (error) {
     console.error(error);
   }
+}
+function buscaEnArray(busco,array)
+{
+  var resultado =  array.filter(function(element) {
+    return element.alumno == busco;
+  });
+  if(resultado)
+  {
+    return resultado[0].conexion;
+  } 
+  else  return null;
+}
+function remueveEnArray(busco,array)
+{
+  var resultado =  array.filter(function(element) {
+    return element.alumno != busco;
+  });
+  if(resultado) return resultado;
+  return array;
+}
+function anyadeAlumno(alumnos,video,nombre){
+    var contenedorAlumno=document.createElement('div');
+    contenedorAlumno.id=nombre; 
+    contenedorAlumno.class="alumno-video";
+    contenedorAlumno.appendChild(video);
+    //document.getElementById('videosAlumnos').appendChild(contenedorAlumno);
+    $('div.alumnosframe').append(contenedorAlumno);
+    if (alumnos == 1) {
+      $('div.alumnosverticalalign.visible').css('margin-top', '9%');
+      $('div.profesor-video-miniframe').css('width', '48%');
+      $('div.profesor-video-miniframe').css('height', '47%');
+      $('div.alumnosframe').append(contenedorAlumno);
+      $('div.alumno-video').css('width', '48%');
+      $('div.alumno-video').css('height', '47%');
+      }
+
+
+    if (alumnos == 2) {
+        $('div.alumnosverticalalign.visible').css('margin-top', '8%');
+        $('div.profesor-video-miniframe').css('width', '32%');
+        $('div.profesor-video-miniframe').css('height', '31%');
+        $('div.alumno-video').css('width', '32%');
+        $('div.alumnosframe').append(contenedorAlumno);
+        $('div.alumno-video').css('height', '31%');
+    }             
+
+    if (alumnos >= 3 && alumnos <= 6) {
+        $('div.alumnosverticalalign.visible').css('margin-top', '6%');
+        $('div.profesor-video-miniframe').css('width', '32%');
+        $('div.profesor-video-miniframe').css('height', '31%');
+        $('div.alumnosframe').append(contenedorAlumno);
+        $('div.alumno-video').css('width', '32%');
+        $('div.alumno-video').css('height', '31%');
+    }
+
+
+    if (alumnos >= 6 && alumnos <= 14) {
+        $('div.alumnosverticalalign.visible').css('margin-top', '3%');
+        $('div.profesor-video-miniframe').css('width', '23%');
+        $('div.profesor-video-miniframe').css('height', '22%');
+        $('div.alumnosframe').append(contenedorAlumno);
+        $('div.alumno-video').css('width', '23%');
+        $('div.alumno-video').css('height', '22%');
+    }
+    if (alumnos >= 15 && alumnos <= 23) {
+        $('div.alumnosverticalalign.visible').css('margin-top', '2%');
+        $('div.profesor-video-miniframe').css('width', '18%');
+        $('div.profesor-video-miniframe').css('height', '17%');
+        $('div.alumnosframe').append(contenedorAlumno);
+        $('div.alumno-video').css('width', '18%');
+        $('div.alumno-video').css('height', '17%');
+
+    }
+    if (alumnos >= 24 && alumnos <= 34) {
+        $('div.alumnosverticalalign.visible').css('margin-top', '1%');
+        $('div.profesor-video-miniframe').css('width', '14%');
+        $('div.profesor-video-miniframe').css('height', '13%');
+        $('div.alumnosframe').append(contenedorAlumno);
+        $('div.alumno-video').css('width', '14%');
+        $('div.alumno-video').css('height', '13%');
+
+    }
+
+    if (alumnos >= 35 && alumnos <= 55) {
+        $('div.alumnosverticalalign.visible').css('margin-top', '0%');
+        $('div.profesor-video-miniframe').css('width', '12%');
+        $('div.profesor-video-miniframe').css('height', '11%');
+        $('div.alumnosframe').append(contenedorAlumno);
+        $('div.alumno-video').css('width', '12%');
+        $('div.alumno-video').css('height', '11%');
+
+    }
 }
 function CopyToClipboard(containerid) {
   if (document.selection) {
@@ -32,10 +124,11 @@ function initializeSession() {
     };
     console.log('streamCreated');
     console.log(event);
-    var contenedorAlumno=document.createElement('div');
-      contenedorAlumno.id=event.stream.connection.connectionId; 
-      contenedorAlumno.class="alumno-video";
-      
+    
+    arrayConexiones.push({
+      alumno:event.stream.connection.connectionId,
+      conexion:event.stream.connection
+    });
     var subscriber=session.subscribe(event.stream,subscriberOptions, handleError);
     subscriber.on('videoElementCreated', function(event) {
       let numeroAlumnos=document.getElementById('numeroAlumnos').innerHTML;
@@ -45,9 +138,9 @@ function initializeSession() {
       console.log(event);
       //event.element.id=event.element.srcObject.id;
       event.element.poster="../img/coco.jpeg";
+      let video=event.element;
+      anyadeAlumno(arrayConexiones.length,video,arrayConexiones[arrayConexiones.length-1].alumno);
       
-      contenedorAlumno.appendChild(event.element);
-      document.getElementById('videosAlumnos').appendChild(contenedorAlumno);
       document.getElementById('numeroAlumnos').innerHTML=numeroAlumnos;
       document.getElementById('numeroAlumnosVideos').innerHTML=numeroAlumnos;
       
@@ -58,13 +151,14 @@ function initializeSession() {
   });
   session.on('streamDestroyed',function streamDestroyed(event){
     console.log(event);
+    console.log(event.stream.connection.id);
     let aborrar=document.getElementById(event.stream.connection.id);
     aborrar.remove();
+    arrayConexiones=remueveEnArray(event.stream.connection.id,arrayConexiones);
     let numeroAlumnos=document.getElementById('numeroAlumnos').innerHTML;
       numeroAlumnos=parseInt(numeroAlumnos);
       numeroAlumnos--;
       if(numeroAlumnos<0) numeroAlumnos=0;
-      document.getElementById('videosAlumnos').appendChild(contenedorAlumno);
       document.getElementById('numeroAlumnos').innerHTML=numeroAlumnos;
       document.getElementById('numeroAlumnosVideos').innerHTML=numeroAlumnos;
   });
@@ -126,9 +220,10 @@ function initializeSession() {
           //alumno-video
           case 'alumno-video handup':
             levantado.className='alumno-video talking';
+            let envioConexion=buscaEnArray(event.data.id,arrayConexiones);
             session.signal(
               {
-                to: 'fdsfsd',
+                to: envioConexion,
                 data:{
                   id:'profe',
                   type:"unmute",
@@ -147,7 +242,7 @@ function initializeSession() {
               levantado.className='alumno-video';
               session.signal(
                 {
-                  to: conexion,
+                  to: envioConexion,
                   data:{
                     id:'profe',
                     type:"mute",
