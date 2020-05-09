@@ -434,9 +434,10 @@ router.post('/available/', function (req, res) {
 router.post('/archive/start', function (req, res) {
   var json = req.body;
   var sessionId = json.sessionId;
+  console.log('voy a arrancar la grabacion '+sessionId);
   opentok.startArchive(sessionId, { name: sessionId }, function (err, archive) {
     if (err) {
-      console.error('error in startArchive');
+      console.error('error en startArchive');
       console.error(err);
       res.status(500).send({ success: false, error: 'startArchive error:' + err });
       return;
@@ -454,10 +455,10 @@ router.post('/archive/start', function (req, res) {
  */
 router.post('/archive/:archiveId/stop', function (req, res) {
   var archiveId = req.params.archiveId;
-  console.log('attempting to stop archive: ' + archiveId);
+  console.log('paro archivo archive: ' + archiveId);
   opentok.stopArchive(archiveId, function (err, archive) {
     if (err) {
-      console.error('error in stopArchive');
+      console.error('error en stopArchive');
       console.error(err);
       res.status(500).send({ success: false, error: 'stopArchive error:' + err });
       return;
@@ -474,10 +475,10 @@ router.post('/archive/:archiveId/stop', function (req, res) {
  */
 router.get('/archive/:archiveId/view', function (req, res) {
   var archiveId = req.params.archiveId;
-  console.log('attempting to view archive: ' + archiveId);
+  console.log('voy a ver archivo: ' + archiveId);
   opentok.getArchive(archiveId, function (err, archive) {
     if (err) {
-      console.error('error in getArchive');
+      console.error('error en getArchive');
       console.error(err);
       res.status(500).send({ error: 'getArchive error:' + err });
       return;
@@ -497,10 +498,10 @@ router.get('/archive/:archiveId/view', function (req, res) {
 router.get('/archive/:archiveId', function (req, res) {
   var archiveId = req.params.archiveId;
 
-  console.log('attempting to fetch archive: ' + archiveId);
+  console.log('voy a bajar archivo: ' + archiveId);
   opentok.getArchive(archiveId, function (err, archive) {
     if (err) {
-      console.error('error in getArchive');
+      console.error('error eb getArchive');
       console.error(err);
       res.status(500).send({ error: 'getArchive error:' + err });
       return;
@@ -523,10 +524,10 @@ router.get('/archive', function (req, res) {
     options.offset = req.query.offset;
   }
 
-  console.log('attempting to list archives');
+  console.log('voy a listar archivos');
   opentok.listArchives(options, function (err, archives) {
     if (err) {
-      console.error('error in listArchives'); 
+      console.error('error en listArchives'); 
       console.error(err);
       res.status(500).send({ error: 'infoArchive error:' + err });
       return;

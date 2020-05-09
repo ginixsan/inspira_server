@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const index = require('./routes/index');
 const cors = require('cors');
-const rateLimiterRedisMiddleware = require('./rateLimiterRedis');
+const rateLimiterRedisMiddleware = require('./middlewares/rateLimiterRedis');
 
 const app = express();
 app.use(rateLimiterRedisMiddleware);
