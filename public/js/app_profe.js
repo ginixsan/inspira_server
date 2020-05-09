@@ -1,5 +1,5 @@
 var arrayConexiones=[];
-
+var session;
 function handleError(error) {
   if (error) {
     console.error(error);
@@ -112,7 +112,7 @@ function CopyToClipboard(containerid) {
   }
 }
 function initializeSession() {
-  var session = OT.initSession(apiKey, sessionId);
+  session = OT.initSession(apiKey, sessionId);
 
   session.on('streamCreated', function streamCreated(event) {
     var subscriberOptions = {
@@ -209,7 +209,7 @@ function initializeSession() {
   });
   session.on("signal", function(event) {
     console.log("Se ha enviado una señal desde " + event.from);
-    console.log(event.data);
+    console.log(event);
     switch (event.data.type) {
       case "manoLevantada":
           console.log('paso por mano levantada');
@@ -421,10 +421,13 @@ function lockRoom(lock)
 function enviaPizarra(datos)
 {
   console.log('envio los datos de la pizarra');
+  datosEnvio={
+    type:'pizarra',
+    datos:datos
+  };
   session.signal(
     {
-      type:'pizarra',
-      datos:data
+      data:datosEnvio
     },
     function(error) {
       if (error) {
@@ -436,4 +439,3 @@ function enviaPizarra(datos)
   );
   
 };
-}
