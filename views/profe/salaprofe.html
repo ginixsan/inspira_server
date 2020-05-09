@@ -16,7 +16,9 @@
         const sessionId =<%- JSON.stringify(sessionId) %>;
         console.log(sessionId);
         const token =<%- JSON.stringify(token) %>;
-        console.log(token);</script>
+        console.log(token);
+        const tokenTeacher =<%- JSON.stringify(tokenProfe) %>;
+        </script>
     <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
 
     <!-- Polyfill for fetch API so that we can fetch the sessionId and token in IE11 -->
@@ -446,51 +448,13 @@
                 $('.record').prepend('<i data-feather="circle"></i>');
                 feather.replace();
                 console.log('grabando');
-                fetch("/archive/start", {
-                    method: "post",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "sessionId": token
-                    })
-                }).then(function fetchJson(json) {
-                    if (json.success === true) {
-                        grabacion = json.archivo;
-                    }
-                    else {
-                        console.log('error ',json)
-                    }
-                }).catch(function catchErr(error) {
-                    handleError(error);
-                    console.log(error);
-                });
+                grabacion=graba();
                 record = 1;
             } else {
                 $('.rec .feather').remove();
                 $('.rec').prepend('<i data-feather="circle"></i>');
                 feather.replace();
-                fetch("/archive/" + grabacion + "/stop", {
-                    method: "post",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "sessionId": token
-                    })
-                }).then(function fetchJson(json) {
-                    if (json.success === true) {
-                        console.log('grabacion parada');
-                    }
-                    else {
-                        console.log('error ',json)
-                    }
-                }).catch(function catchErr(error) {
-                    handleError(error);
-                    console.log(error);
-                });
+                paraGraba(grabacion);
                 record = 0;
             }
         });

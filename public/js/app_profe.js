@@ -38,6 +38,7 @@ function anyadeAlumno(alumnos,video,nombre){
       $('div.alumnosframe').append(contenedorAlumno);
       $('div.alumno-video').css('width', '48%');
       $('div.alumno-video').css('height', '47%');
+      console.log($('div.profesor-video-miniframe').css());
       }
 
 
@@ -173,7 +174,7 @@ function initializeSession() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          "token":token,
+          "token":tokenTeacher,
           "available":true
         })
       })
@@ -195,7 +196,7 @@ function initializeSession() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        "token":token,
+        "token":tokenTeacher,
         "available":false
       })
     })
@@ -294,9 +295,21 @@ function initializeSession() {
     var video=event.element;
     video.id="videoprofesor";
     video.poster="../img/coco.jpeg";
-    var video2=video.cloneNode(true);
+    var videopeque=document.createElement('canvas');
+    videopeque.id='videoprofepequenyo';
+    /*var video2=video.cloneNode(true);
+    video2.id="videoprofepequeño";
+    video2.src=video.src;*/
     document.getElementById('videoprofe').appendChild(video);
-    document.getElementById('videoProfeAlumnos').appendChild(video2);
+    document.getElementById('videoProfeAlumnos').appendChild(videopeque);
+    var v = document.getElementById('videoprofesor');
+    var canvas = document.getElementById('videoprofepequenyo');
+    var context = canvas.getContext('2d');
+    var cw = Math.floor(canvas.clientWidth);
+    var ch = Math.floor(canvas.clientHeight);
+    canvas.width = cw;
+    canvas.height = ch;
+    updateBigVideo(v,context,cw,ch);
 
   });
   publisher.on('streamCreated',function(event){
@@ -343,12 +356,12 @@ function muteVideo(video)
   }
   else
   {
-    publisher.publishVideo(false);
+    publisher.publishVideo(true);
   }
 }
 function lockRoom(lock)
 {
-  console.log('voy a cerrar/abrir sala');
+  console.log('voy a cerrar/abrir sala '+tokenTeacher);
   if(lock===0)
   {
     fetch("/close",{
@@ -358,7 +371,7 @@ function lockRoom(lock)
           'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-          "token": token
+          "token": tokenTeacher
       })
       }).then(function fetch(res) {
                     return res.json();
@@ -392,7 +405,7 @@ function lockRoom(lock)
           'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-          "token": token
+          "token": tokenTeacher
       })
       }).then(function fetch(res) {
                     return res.json();
@@ -439,3 +452,86 @@ function enviaPizarra(datos)
   );
   
 };
+function graba()
+{
+  fetch("/archive/start", {
+    method: "post",
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        "sessionId": sessionId
+    })
+}).then(function fetch(res) {
+  return res.json();
+}).then(function fetchJson(json) {
+    console.log(json);
+    if (json.success === true) {
+       let  grabacion = json.archivo;
+        return grabacion;
+    }
+    else {
+        console.log('error ',json);
+        return false;
+    }
+}).catch(function catchErr(error) {
+    handleError(error);
+    console.log(error);
+});
+}
+function paraGraba(idgrabacion)
+{
+  fetch("/stop/" + idgrabacion, {
+    method: "get",
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+}).then(function fetch(res) {
+      return res.json();
+}).then(function fetchJson(json) {
+  console.log(json);
+    if (json.success === true) {
+        console.log('grabacion parada');
+    }
+    else {
+        console.log('error ',json)
+    }
+}).catch(function catchErr(error) {
+    handleError(error);
+    console.log(error);
+});
+};
+
+
+function updateBigVideo(v,c,w,h) {
+    if(v.paused || v.ended) return false;
+    c.drawImage(v,0,0,w,h);
+    setTimeout(updateBigVideo,20,v,c,w,h);
+};
+
+$(document).ready(function()
+{
+    $(window).bind("beforeunload", function() { 
+      fetch("/available", {
+        method: "post",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "token":tokenTeacher,
+          "available":false
+        })
+      })
+      .then( (response) => { 
+        console.log(response);
+        //hagamos algo bonito que cambie el mundo y tratemos errores!!!
+      }).catch(function catchErr(error) {
+        handleError(error);
+        console.log(error);
+      });
+        return confirm("Do you really want to close?"); 
+    });
+});

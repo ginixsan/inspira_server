@@ -50,7 +50,7 @@ router.get('/', function (req, res) {
 });
 
 //AQUI EL FORMULARIO PARA CREAR UNA HABITACION!!
-router.get('/room', function (req, res) {
+router.get('/room', function (req, res) {rs
   res.render('crearclase', { title: 'Clase Espira' });
 });
 /**
@@ -202,7 +202,8 @@ router.get('/room/:token', function (req, res) {
               apiKey: apiKey,
               sessionId: sessionId,
               token: tokenOpen,
-              title: habita.nombreSala
+              title: habita.nombreSala,
+              tokenProfe:token
             };
             console.log(envio);
             res.render('salaprofe', envio);
@@ -226,23 +227,28 @@ router.post('/close', function (req, res) {
   var token = req.body.token;
   rooms.findOne({ teacherToken: token }, function (err, habita) {
     if (habita) {
-      console.log(habita);
-      client.get(habita.unifiedToken, function (err, result) {
-        if (result) {
-          if (result.abierta === false) {
-            result.abierta = true;
+      //console.log(habita);
+      client.hgetall(habita.unifiedToken, function (err, result) {
+        console.log(result);
+        let datos=result;
+        console.log(datos.abierta);
+        if (datos) {
+          if (datos.abierta == 'false') {
+            console.log('la abro');
+            datos.abierta = true;
           }
           else {
-            result.abierta = false;
+            console.log('la cierro');
+            datos.abierta = false;
           }
 
-          client.hmset(habita.unifiedToken, result, function (err, reply) {
+          client.hmset(habita.unifiedToken, datos, function (err, reply) {
             console.log(reply);
             res.send({
               exists: true,
               available: true,
               full: false,
-              closed: result.abierta
+              closed: datos.abierta
             });
           });
         }
@@ -343,9 +349,11 @@ router.get('/available/:token', function (req, res) {
 router.post('/available/', function (req, res) {
   var token = req.body.token;
   var available = req.body.available;
+  console.log(token+' '+available);
   rooms.findOne({ unifiedToken: token }, function (err, habita) {
     if (habita) {
       //es alumno
+      console.log('pasa por aquio');
       client.get(habita.unifiedToken, function (err, result) {
         if (result) {
           console.log(result);
@@ -391,11 +399,13 @@ router.post('/available/', function (req, res) {
         if (habita) {
           if (available === true) {
             //es profe y entra
+            console.log('esprofe');
             let participantes = habita.maxParticipants - 1;
             client.hmset(habita.unifiedToken, {
               'participantes': participantes,
               'abierta': true
             }, function (err, reply) {
+              if(err) console.log(err);
               console.log(reply);
               res.send({
                 exists: true,
@@ -453,7 +463,7 @@ router.post('/archive/start', function (req, res) {
 /**
  * PARA LA GRABACION
  */
-router.post('/archive/:archiveId/stop', function (req, res) {
+router.get('/stop/:archiveId', function (req, res) {
   var archiveId = req.params.archiveId;
   console.log('paro archivo archive: ' + archiveId);
   opentok.stopArchive(archiveId, function (err, archive) {
