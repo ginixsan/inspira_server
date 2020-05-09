@@ -60,6 +60,13 @@ function initializeSession() {
     console.log(event);
     let aborrar=document.getElementById(event.stream.connection.id);
     aborrar.remove();
+    let numeroAlumnos=document.getElementById('numeroAlumnos').innerHTML;
+      numeroAlumnos=parseInt(numeroAlumnos);
+      numeroAlumnos--;
+      if(numeroAlumnos<0) numeroAlumnos=0;
+      document.getElementById('videosAlumnos').appendChild(contenedorAlumno);
+      document.getElementById('numeroAlumnos').innerHTML=numeroAlumnos;
+      document.getElementById('numeroAlumnosVideos').innerHTML=numeroAlumnos;
   });
   session.on('sessionConnected', function sessionDisconnected(event) {
     console.log('Me he conectado a la sesion.');
@@ -121,10 +128,10 @@ function initializeSession() {
             levantado.className='alumno-video talking';
             session.signal(
               {
-                to: conexion,
+                to: 'fdsfsd',
                 data:{
                   id:'profe',
-                  type:"unMute",
+                  type:"unmute",
                 }
               },
               function(error) {

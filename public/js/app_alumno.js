@@ -42,7 +42,22 @@ function initializeSession() {
       session.subscribe(event.stream, 'subscriber', subscriberOptions, handleError);
     }
   });
-
+  session.on("signal", function(event) {
+    console.log("Se ha enviado una señal desde " + event.from);
+    console.log(event.data);
+    switch (event.data.type) {
+      case 'unmute':
+        console.log('unmute');
+        publisher.publishAudio=true;
+        break;
+      case 'mute':
+        publisher.publishAudio=false;
+        console.log('unmute');
+        break;
+      default:
+        break;
+    }
+  });
   session.on('sessionConnected', function sessionDisconnected(event) {
     console.log('Me he conectado a la sesion.', event.reason);
     //LLAMA A REDIS Y DILE QUE TE HAS CONECTADO CON EL TOKEN
