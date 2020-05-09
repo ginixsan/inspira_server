@@ -33,8 +33,9 @@ function initializeSession() {
     console.log('streamCreated');
     console.log(event);
     var contenedorAlumno=document.createElement('div');
-      contenedorAlumno.id=event.stream.name; 
+      contenedorAlumno.id=event.stream.connection.connectionId; 
       contenedorAlumno.class="alumno-video";
+      
     var subscriber=session.subscribe(event.stream,subscriberOptions, handleError);
     subscriber.on('videoElementCreated', function(event) {
       let numeroAlumnos=document.getElementById('numeroAlumnos').innerHTML;
@@ -108,6 +109,56 @@ function initializeSession() {
       console.log(event);
       var levantado=document.getElementById(event.data.id);
       levantado.className='alumno-video handup';
+      levantado.addEventListener('click',function(e,conexion){
+        switch (levantado.className) {
+          //alumno-video
+          case 'alumno-video handup':
+            levantado.className='alumno-video talking';
+            session.signal(
+              {
+                to: conexion,
+                data:{
+                  id:'profe',
+                  type:"unMute",
+                }
+              },
+              function(error) {
+                if (error) {
+                  console.log("signal error ("+ error.name+ "): " + error.message);
+                } else {
+                  console.log("signal sent.");
+                }
+              }
+            );
+            break;
+          case 'alumno-video talking':
+              levantado.className='alumno-video';
+              session.signal(
+                {
+                  to: conexion,
+                  data:{
+                    id:'profe',
+                    type:"mute",
+                  }
+                },
+                function(error) {
+                  if (error) {
+                    console.log("signal error ("+ error.name+ "): " + error.message);
+                  } else {
+                    console.log("signal sent.");
+                    levantado.removeEventListener('click',function(e){
+                      console.log('ya ni habla ni nada quito listener');
+                    })
+                  }
+                }
+              );
+              break;
+          default:
+            break;
+        }
+        
+
+      });
 
     }
   });
@@ -124,10 +175,12 @@ function initializeSession() {
   publisher.on('videoElementCreated', function(event) {
     console.log('video element created');
     console.log(event.element);
-    event.element.id="videoprofesor";
-    event.element.poster="../img/coco.jpeg";
-    document.getElementById('videoprofe').appendChild(event.element);
-    document.getElementById('videoProfeAlumnos').appendChild(event.element);
+    var video=event.element;
+    video.id="videoprofesor";
+    video.poster="../img/coco.jpeg";
+    var video2=video.cloneNode(true);
+    document.getElementById('videoprofe').appendChild(video);
+    document.getElementById('videoProfeAlumnos').appendChild(video2);
 
   });
   publisher.on('streamCreated',function(event){

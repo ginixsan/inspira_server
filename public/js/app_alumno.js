@@ -88,13 +88,13 @@ function initializeSession() {
       console.log(error);
     });
   });
-
+ var alumno=Math.floor(Math.random() * 100000000000);
   var publisherOptions = {
     insertMode: 'append',
     width: '33%',
     height: '33%',
     resolution:'320x240',
-    name:'alumno',
+    name:alumno,
     publishAudio:false,
     style:{nameDisplayMode:'on'}
   };
@@ -118,7 +118,7 @@ function initializeSession() {
                     {
                       to: profeId,
                       data:{
-                        id:publisher.stream.name,
+                        id:session.connection.connectionId,
                         type:"manoLevantada",
                       }
                     },
