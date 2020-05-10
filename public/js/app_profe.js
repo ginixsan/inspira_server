@@ -36,8 +36,7 @@ function anyadeAlumno(alumnos,video,nombre){
       $('div.profesor-video-miniframe').css('height', '47%');
       $('div.alumnosframe').append(contenedorAlumno);
       $('div.alumno-video').css('width', '48%');
-      $('div.alumno-video').css('height', '47%');
-      console.log($('div.profesor-video-miniframe').css());
+      $('div.alumno-video').css('height', '47%'); 
       }
 
 
