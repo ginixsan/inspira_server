@@ -6,6 +6,7 @@ var token;
 var profeId;
 var arrayConexiones=[];
 var session;
+var publisher;
 function handleError(error) {
   if (error) {
     console.error(error);
@@ -128,7 +129,8 @@ function initializeSession() {
         console.log(event);
         //event.element.id=event.element.srcObject.id;
         event.element.poster="../img/coco.jpeg";
-        let video=event.element;        
+        let video=event.element; 
+        video.id="profvideo"       
         document.getElementById('videoprofe').appendChild(video);
         var videopeque=document.createElement('canvas');
         videopeque.id='videoprofepequenyo';
@@ -136,7 +138,7 @@ function initializeSession() {
         video2.id="videoprofepequeño";
         video2.src=video.src;*/
         document.getElementById('miniprofe').appendChild(videopeque);
-        var v = document.getElementById('videoprofe');
+        var v = document.getElementById('profvideo');
         var canvas = document.getElementById('videoprofepequenyo');
         var context = canvas.getContext('2d');
         var cw = Math.floor(canvas.clientWidth);
@@ -289,7 +291,7 @@ function initializeSession() {
     publishAudio:false,
     insertDefaultUI: false
   };
-  var publisher = OT.initPublisher(publisherOptions, handleError);
+  publisher = OT.initPublisher(publisherOptions, handleError);
   publisher.on('videoElementCreated', function(event) {
     console.log('video element created');
     console.log(event.element);

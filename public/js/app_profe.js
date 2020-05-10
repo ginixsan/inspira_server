@@ -34,7 +34,7 @@ function anyadeAlumno(alumnos,video,nombre){
       $('div.alumnosverticalalign.visible').css('margin-top', '9%');
       $('div.profesor-video-miniframe').css('width', '48%');
       $('div.profesor-video-miniframe').css('height', '47%');
-      $('div.alumnosframe').append(contenedorAlumno);
+      $('#videosAlumnos').append(contenedorAlumno);
       $('div.alumno-video').css('width', '48%');
       $('div.alumno-video').css('height', '47%'); 
       }
@@ -45,7 +45,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.profesor-video-miniframe').css('width', '32%');
         $('div.profesor-video-miniframe').css('height', '31%');
         $('div.alumno-video').css('width', '32%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('height', '31%');
     }             
 
@@ -53,7 +53,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.alumnosverticalalign.visible').css('margin-top', '6%');
         $('div.profesor-video-miniframe').css('width', '32%');
         $('div.profesor-video-miniframe').css('height', '31%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('width', '32%');
         $('div.alumno-video').css('height', '31%');
     }
@@ -63,7 +63,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.alumnosverticalalign.visible').css('margin-top', '3%');
         $('div.profesor-video-miniframe').css('width', '23%');
         $('div.profesor-video-miniframe').css('height', '22%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('width', '23%');
         $('div.alumno-video').css('height', '22%');
     }
@@ -71,7 +71,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.alumnosverticalalign.visible').css('margin-top', '2%');
         $('div.profesor-video-miniframe').css('width', '18%');
         $('div.profesor-video-miniframe').css('height', '17%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('width', '18%');
         $('div.alumno-video').css('height', '17%');
 
@@ -80,7 +80,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.alumnosverticalalign.visible').css('margin-top', '1%');
         $('div.profesor-video-miniframe').css('width', '14%');
         $('div.profesor-video-miniframe').css('height', '13%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('width', '14%');
         $('div.alumno-video').css('height', '13%');
 
@@ -90,7 +90,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.alumnosverticalalign.visible').css('margin-top', '0%');
         $('div.profesor-video-miniframe').css('width', '12%');
         $('div.profesor-video-miniframe').css('height', '11%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('width', '12%');
         $('div.alumno-video').css('height', '11%');
 

@@ -303,7 +303,7 @@ router.get('/available/:token', function (req, res) {
   rooms.findOne({ unifiedToken: token }, function (err, habita) {
     if (habita) {
       console.log(habita);
-      client.get(habita.unifiedToken, function (err, result) {
+      client.hgetall(habita.unifiedToken, function (err, result) {
         if (result) {
           if (result.abierta === true && result.participantes > 0) {
             console.log(result);
@@ -324,7 +324,7 @@ router.get('/available/:token', function (req, res) {
               full: llena
             });
           }
-        }
+        } 
         else {
           res.send({
             exists: true,
@@ -358,7 +358,7 @@ router.post('/available/', function (req, res) {
     if (habita) {
       //es alumno
       console.log('pasa es alumno');
-      client.get(habita.unifiedToken, function (err, result) {
+      client.hgetall(habita.unifiedToken, function (err, result) {
         if (result) {
           console.log(result);
           //la sala esta arrancada

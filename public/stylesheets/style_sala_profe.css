@@ -1186,12 +1186,12 @@ div.profesor-video-miniframe {
 	margin-right: 1%;
 	
 	-moz-transition: all 1s ease;
-                -ms-transition: all 1s ease;
-                
-                -o-transition: all 1s ease;
-                -webkit-transition: all 1s ease;
-                transition: all 1s ease;
-                vertical-align: top;
+	-ms-transition: all 1s ease;
+
+	-o-transition: all 1s ease;
+	-webkit-transition: all 1s ease;
+	transition: all 1s ease;
+	vertical-align: top;
 	margin-bottom: 1%;
 	margin-left: 0;
 }
