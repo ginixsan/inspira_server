@@ -172,7 +172,8 @@ router.get('/room/:token', function (req, res) {
           apiKey: apiKey,
           sessionId: sessionId,
           token: tokenOpen,
-          title: habita.nombreSala
+          title: habita.nombreSala,
+          studentToken:habita.unifiedToken
         });
       });
     }

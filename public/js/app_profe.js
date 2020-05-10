@@ -30,7 +30,6 @@ function anyadeAlumno(alumnos,video,nombre){
     contenedorAlumno.class="alumno-video";
     contenedorAlumno.appendChild(video);
     //document.getElementById('videosAlumnos').appendChild(contenedorAlumno);
-    $('div.alumnosframe').append(contenedorAlumno);
     if (alumnos == 1) {
       $('div.alumnosverticalalign.visible').css('margin-top', '9%');
       $('div.profesor-video-miniframe').css('width', '48%');
