@@ -50,7 +50,7 @@ router.get('/', function (req, res) {
 });
 
 //AQUI EL FORMULARIO PARA CREAR UNA HABITACION!!
-router.get('/room', function (req, res) {rs
+router.get('/room', function (req, res) {
   res.render('crearclase', { title: 'Clase Espira' });
 });
 /**
