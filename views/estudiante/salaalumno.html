@@ -15,7 +15,6 @@
         
         <link rel="stylesheet" href="../stylesheets/style_alumno.css">
         <script src="https://unpkg.com/feather-icons"></script>
-        <script src="../js/sala_alumno.js"></script>
    
     </head>
 
@@ -57,7 +56,7 @@
             <div class="participants alumnos visible">
                 <div class="alumnosverticalalign visible">
                     
-                    <h3 class="badgecounter"><span id="numeroAlumnos" class="badge badge-secondary">0</span></h3>
+                    <h3 class="badgecounter"><span id="numeroAlumnos" class="badge badge-secondary">1</span></h3>
                     
                     <div id="videoProfeAlumnos" class="alumnosframe visible">
                         <!--- profe --->
@@ -140,7 +139,7 @@
                     <i class="icon" data-feather="mic"></i>
                     <span class="btntext">Mute</span>
                 </div>
-                
+                -->
                
                 <div class="button camera" id="saveButton">
                     <i data-feather="video"></i>
@@ -149,11 +148,11 @@
                 
                 
                 <div class="button class" id="saveButton">
-                    <span class="badge badge-pill badge-danger">17</span>
+                    <span id="numeroalumnos" class="badge badge-pill badge-danger">1</span>
                     <i data-feather="grid"></i>
                     <span class="btntext">Class</span>
                 </div>
-            -->
+            
             </div>
             
             
@@ -192,7 +191,21 @@
         
         
         
-        
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script><!-- Header -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script><!-- Image -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script><!-- Delimiter -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script><!-- List -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script><!-- Checklist -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script><!-- Quote -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script><!-- Code -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script><!-- Embed -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script><!-- Table -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/link@latest"></script><!-- Link -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@latest"></script><!-- Warning -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script><!-- Marker -->
+        <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script><!-- Inline Code -->
+        <script src="../js/editor_alumno.js"></script>
+        <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>  -->
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -253,11 +266,13 @@
                     $('.camera .feather').remove();
                     $('.camera').prepend('<i data-feather="video-off"></i>');
                     feather.replace();
+                    muteVideo(cam);
                     cam = 1;
                 }else{
                     $('.camera .feather').remove();
                     $('.camera').prepend('<i data-feather="video"></i>');
                     feather.replace();
+                    muteVideo(cam);
                     cam = 0;
                 }
             });
@@ -495,7 +510,7 @@
                         clearInterval(interval);
                     }
                 }, 1000);*/
-                
+            $(document).on("click",".class",function() {    
                 
                 if(page == 1){
                     $('div.participants.profe').css( 'right', '100%');
@@ -598,5 +613,8 @@
             
             
         </script> 
+        
+         <script src="../js/sala_alumno.js"></script>
+         
     </body>
 </html>

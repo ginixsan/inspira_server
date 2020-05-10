@@ -11,6 +11,25 @@ function handleError(error) {
     console.error(error);
   }
 }
+function buscaEnArray(busco,array)
+{
+  var resultado =  array.filter(function(element) {
+    return element.alumno == busco;
+  });
+  if(resultado)
+  {
+    return resultado[0].conexion;
+  } 
+  else  return null;
+}
+function remueveEnArray(busco,array)
+{
+  var resultado =  array.filter(function(element) {
+    return element.alumno != busco;
+  });
+  if(resultado) return resultado;
+  return array;
+}
 function anyadeAlumno(alumnos,video,nombre){
   var contenedorAlumno=document.createElement('div');
   contenedorAlumno.id=nombre; 
@@ -24,7 +43,6 @@ function anyadeAlumno(alumnos,video,nombre){
     $('div.alumnosframe').append(contenedorAlumno);
     $('div.alumno-video').css('width', '48%');
     $('div.alumno-video').css('height', '47%');
-    console.log($('div.profesor-video-miniframe').css());
     }
 
 
@@ -144,17 +162,19 @@ function initializeSession() {
       };
       var subscriber2=session.subscribe(event.stream,subscriberOptions, handleError);
       subscriber2.on('videoElementCreated', function(event) {
-        anyadeAlumno(arrayConexiones.length,video,arrayConexiones[arrayConexiones.length-1].alumno);
         console.log('video element created del alumno');
         console.log(event);
         //event.element.id=event.element.srcObject.id;
         event.element.poster="../img/coco.jpeg";
         let video=event.element;        
         document.getElementById('videoProfeAlumnos').appendChild(video);  
-        let numeroAlumnos=document.getElementById('numeroAlumnos').innerHTML;
+        let numeroAlumnos=document.getElementById('numeroalumnos').innerHTML;
         numeroAlumnos=parseInt(numeroAlumnos);
         numeroAlumnos++;      
+        document.getElementById('numeroalumnos').innerHTML=numeroAlumnos;
         document.getElementById('numeroAlumnos').innerHTML=numeroAlumnos;
+        anyadeAlumno(arrayConexiones.length,video,arrayConexiones[arrayConexiones.length-1].alumno);
+
       });
     }
   });
@@ -165,11 +185,12 @@ function initializeSession() {
     let aborrar=document.getElementById(event.stream.connection.id);
     aborrar.remove();
     arrayConexiones=remueveEnArray(event.stream.connection.id,arrayConexiones);
-    let numeroAlumnos=document.getElementById('numeroAlumnos').innerHTML;
+    let numeroAlumnos=document.getElementById('numeroalumnos').innerHTML;
       numeroAlumnos=parseInt(numeroAlumnos);
       numeroAlumnos--;
       if(numeroAlumnos<0) numeroAlumnos=0;
       document.getElementById('numeroAlumnos').innerHTML=numeroAlumnos;
+      document.getElementById('numeroalumnos').innerHTML=numeroAlumnos;
   });
 
   session.on("signal", function(event) {
@@ -196,7 +217,7 @@ function initializeSession() {
     }
   });
   session.on('sessionConnected', function sessionDisconnected(event) {
-    console.log('Me he conectado a la sesion.', event.reason);
+    console.log('Me he conectado a la sesion.', event.target.connection.id);
     //LLAMA A REDIS Y DILE QUE TE HAS CONECTADO CON EL TOKEN
     fetch("/available", {
       method: "post",
@@ -209,10 +230,28 @@ function initializeSession() {
         "available":true
       })
     })
-    .then( (response) => { 
-      console.log(response);
-      //hagamos algo bonito que cambie el mundo y tratemos errores!!!
-    }).catch(function catchErr(error) {
+    .then(function fetch(res) {
+      return res.json();
+}).then(function fetchJson(json) {
+      console.log(json);
+      if(json.available==true&&json.exists==true){
+          console.log('sala abierta '+json.closed);
+      }
+      else
+      {
+          if(json.available==false)
+          {
+            console.log('la sala no esta abierta'+studentToken);
+              alert('la sala aun no esta abierta');
+              window.location.href='/acceso/'+studentToken;
+          }
+          if(json.exists==false)
+          {
+              alert('la sala no existe');
+              //window.location.href='/';
+          }
+      }
+}).catch(function catchErr(error) {
       handleError(error);
       console.log(error);
     });
@@ -258,12 +297,18 @@ function initializeSession() {
     video.id="videomio";
     video.poster="../img/coco.jpeg";
     document.getElementById('videoProfeAlumnos').appendChild(video);
+    arrayConexiones.push({
+      alumno:'yo',
+      conexion:'lamia'
+    });
+    anyadeAlumno(arrayConexiones.length,video,arrayConexiones[arrayConexiones.length-1].alumno);
+    
   });
   session.connect(token, function callback(error) {
     if (error) {
       handleError(error);
     } else {
-      console.log((session.connection.data));
+      console.log((session.connection));
       session.publish(publisher, function(error){
         if(error)
         {
@@ -296,29 +341,13 @@ function initializeSession() {
     }
   });
 }
-API_KEY=apiKey;
-SESSION_ID=sessionId;
-TOKEN=token;
-if (API_KEY && TOKEN && SESSION_ID) {
-  apiKey = API_KEY;
-  sessionId = SESSION_ID;
-  token = TOKEN;
+console.log(apiKey);
+console.log(sessionId);
+console.log(studentToken);
+if (apiKey && sessionId && studentToken) {
+  console.log('inicializo');
   initializeSession();
-} else if (SAMPLE_SERVER_BASE_URL) {
-  fetch(SAMPLE_SERVER_BASE_URL + '/room/ginix').then(function fetch(res) {
-    return res.json();
-  }).then(function fetchJson(json) {
-    apiKey = json.apiKey;
-    sessionId = json.sessionId;
-    token = json.token;
-    console.log(token);
-
-    initializeSession();
-  }).catch(function catchErr(error) {
-    handleError(error);
-    alert('Failed to get opentok sessionId and token. Make sure you have updated the config.js file.');
-  });
-}
+} 
 /*function docReady(fn) {
   if (document.readyState === "complete" || document.readyState === "interactive") {
       setTimeout(fn, 1);
@@ -331,3 +360,15 @@ function updateBigVideo(v,c,w,h) {
   c.drawImage(v,0,0,w,h);
   setTimeout(updateBigVideo,20,v,c,w,h);
 };
+function muteVideo(video)
+{
+  console.log('voy a mutear/desmutear video');
+  if(video===0)
+  {
+    publisher.publishVideo(false);
+  }
+  else
+  {
+    publisher.publishVideo(true);
+  }
+}

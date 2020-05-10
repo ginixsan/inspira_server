@@ -168,7 +168,9 @@ router.get('/room/:token', function (req, res) {
         const tokenOpen = opentok.generateToken(sessionId);
         console.log(result);
         // generate token
-        res.render('indexalumno', {
+       // res.render('indexalumno', {
+
+        res.render('salaalumno', {
           apiKey: apiKey,
           sessionId: sessionId,
           token: tokenOpen,
@@ -348,13 +350,14 @@ router.get('/available/:token', function (req, res) {
 //O EN CASO DE SER EL PROFE CREA O CIERRA LA SALA AL SALIR
 
 router.post('/available/', function (req, res) {
+  console.log('paso por available');
   var token = req.body.token;
   var available = req.body.available;
   console.log(token+' '+available);
   rooms.findOne({ unifiedToken: token }, function (err, habita) {
     if (habita) {
       //es alumno
-      console.log('pasa por aquio');
+      console.log('pasa es alumno');
       client.get(habita.unifiedToken, function (err, result) {
         if (result) {
           console.log(result);
@@ -392,6 +395,15 @@ router.post('/available/', function (req, res) {
               });
             }
           }
+        }
+        else
+        {
+          res.send({
+            exists: true,
+            available: false,
+            full: false,
+            closed: false
+          });
         }
       })
     }
