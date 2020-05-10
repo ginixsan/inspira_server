@@ -54,6 +54,11 @@ function initializeSession() {
         publisher.publishAudio=false;
         console.log('unmute');
         break;
+      case 'pizarra':
+        console.log('actualiza pizarra con '+event.data.datos);
+        editor.clear();
+        editor.render(event.data.datos);
+        break;
       default:
         break;
     }

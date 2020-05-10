@@ -1,5 +1,5 @@
 var arrayConexiones=[];
-
+var session;
 function handleError(error) {
   if (error) {
     console.error(error);
@@ -30,14 +30,13 @@ function anyadeAlumno(alumnos,video,nombre){
     contenedorAlumno.class="alumno-video";
     contenedorAlumno.appendChild(video);
     //document.getElementById('videosAlumnos').appendChild(contenedorAlumno);
-    $('div.alumnosframe').append(contenedorAlumno);
     if (alumnos == 1) {
       $('div.alumnosverticalalign.visible').css('margin-top', '9%');
       $('div.profesor-video-miniframe').css('width', '48%');
       $('div.profesor-video-miniframe').css('height', '47%');
-      $('div.alumnosframe').append(contenedorAlumno);
+      $('#videosAlumnos').append(contenedorAlumno);
       $('div.alumno-video').css('width', '48%');
-      $('div.alumno-video').css('height', '47%');
+      $('div.alumno-video').css('height', '47%'); 
       }
 
 
@@ -46,7 +45,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.profesor-video-miniframe').css('width', '32%');
         $('div.profesor-video-miniframe').css('height', '31%');
         $('div.alumno-video').css('width', '32%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('height', '31%');
     }             
 
@@ -54,7 +53,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.alumnosverticalalign.visible').css('margin-top', '6%');
         $('div.profesor-video-miniframe').css('width', '32%');
         $('div.profesor-video-miniframe').css('height', '31%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('width', '32%');
         $('div.alumno-video').css('height', '31%');
     }
@@ -64,7 +63,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.alumnosverticalalign.visible').css('margin-top', '3%');
         $('div.profesor-video-miniframe').css('width', '23%');
         $('div.profesor-video-miniframe').css('height', '22%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('width', '23%');
         $('div.alumno-video').css('height', '22%');
     }
@@ -72,7 +71,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.alumnosverticalalign.visible').css('margin-top', '2%');
         $('div.profesor-video-miniframe').css('width', '18%');
         $('div.profesor-video-miniframe').css('height', '17%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('width', '18%');
         $('div.alumno-video').css('height', '17%');
 
@@ -81,7 +80,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.alumnosverticalalign.visible').css('margin-top', '1%');
         $('div.profesor-video-miniframe').css('width', '14%');
         $('div.profesor-video-miniframe').css('height', '13%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('width', '14%');
         $('div.alumno-video').css('height', '13%');
 
@@ -91,7 +90,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.alumnosverticalalign.visible').css('margin-top', '0%');
         $('div.profesor-video-miniframe').css('width', '12%');
         $('div.profesor-video-miniframe').css('height', '11%');
-        $('div.alumnosframe').append(contenedorAlumno);
+        $('#videosAlumnos').append(contenedorAlumno);
         $('div.alumno-video').css('width', '12%');
         $('div.alumno-video').css('height', '11%');
 
@@ -112,7 +111,7 @@ function CopyToClipboard(containerid) {
   }
 }
 function initializeSession() {
-  var session = OT.initSession(apiKey, sessionId);
+  session = OT.initSession(apiKey, sessionId);
 
   session.on('streamCreated', function streamCreated(event) {
     var subscriberOptions = {
@@ -173,7 +172,7 @@ function initializeSession() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          "token":token,
+          "token":tokenTeacher,
           "available":true
         })
       })
@@ -195,7 +194,7 @@ function initializeSession() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        "token":token,
+        "token":tokenTeacher,
         "available":false
       })
     })
@@ -209,65 +208,74 @@ function initializeSession() {
   });
   session.on("signal", function(event) {
     console.log("Se ha enviado una señal desde " + event.from);
-    console.log(event.data);
-    if(event.data.type==="manoLevantada"){
-      console.log('paso por mano levantada');
-      console.log(event);
-      var levantado=document.getElementById(event.data.id);
-      levantado.className='alumno-video handup';
-      levantado.addEventListener('click',function(e,conexion){
-        switch (levantado.className) {
-          //alumno-video
-          case 'alumno-video handup':
-            levantado.className='alumno-video talking';
-            let envioConexion=buscaEnArray(event.data.id,arrayConexiones);
-            session.signal(
-              {
-                to: envioConexion,
-                data:{
-                  id:'profe',
-                  type:"unmute",
-                }
-              },
-              function(error) {
-                if (error) {
-                  console.log("signal error ("+ error.name+ "): " + error.message);
-                } else {
-                  console.log("signal sent.");
-                }
-              }
-            );
-            break;
-          case 'alumno-video talking':
-              levantado.className='alumno-video';
-              session.signal(
-                {
-                  to: envioConexion,
-                  data:{
-                    id:'profe',
-                    type:"mute",
+    console.log(event);
+    switch (event.data.type) {
+      case "manoLevantada":
+          console.log('paso por mano levantada');
+          console.log(event);
+          var levantado=document.getElementById(event.data.id);
+          levantado.className='alumno-video handup';
+          levantado.addEventListener('click',function(e,conexion){
+            switch (levantado.className) {
+              //alumno-video
+              case 'alumno-video handup':
+                levantado.className='alumno-video talking';
+                let envioConexion=buscaEnArray(event.data.id,arrayConexiones);
+                session.signal(
+                  {
+                    to: envioConexion,
+                    data:{
+                      id:'profe',
+                      type:"unmute",
+                    }
+                  },
+                  function(error) {
+                    if (error) {
+                      console.log("signal error ("+ error.name+ "): " + error.message);
+                    } else {
+                      console.log("signal sent.");
+                    }
                   }
-                },
-                function(error) {
-                  if (error) {
-                    console.log("signal error ("+ error.name+ "): " + error.message);
-                  } else {
-                    console.log("signal sent.");
-                    levantado.removeEventListener('click',function(e){
-                      console.log('ya ni habla ni nada quito listener');
-                    })
-                  }
-                }
-              );
-              break;
-          default:
-            break;
-        }
+                );
+                break;
+              case 'alumno-video talking':
+                  levantado.className='alumno-video';
+                  session.signal(
+                    {
+                      to: envioConexion,
+                      data:{
+                        id:'profe',
+                        type:"mute",
+                      }
+                    },
+                    function(error) {
+                      if (error) {
+                        console.log("signal error ("+ error.name+ "): " + error.message);
+                      } else {
+                        console.log("signal sent.");
+                        levantado.removeEventListener('click',function(e){
+                          console.log('ya ni habla ni nada quito listener');
+                        })
+                      }
+                    }
+                  );
+                  break;
+              default:
+                break;
+            }
+            
+    
+          });
+    
         
-
-      });
-
+        break;
+      case "chatMessage":
+        console.log('chat de '+event.data.id);
+        break;
+      default:
+          break;
     }
+    
   });
   var publisherOptions = {
     insertMode: 'append',
@@ -285,9 +293,21 @@ function initializeSession() {
     var video=event.element;
     video.id="videoprofesor";
     video.poster="../img/coco.jpeg";
-    var video2=video.cloneNode(true);
+    var videopeque=document.createElement('canvas');
+    videopeque.id='videoprofepequenyo';
+    /*var video2=video.cloneNode(true);
+    video2.id="videoprofepequeño";
+    video2.src=video.src;*/
     document.getElementById('videoprofe').appendChild(video);
-    document.getElementById('videoProfeAlumnos').appendChild(video2);
+    document.getElementById('videoProfeAlumnos').appendChild(videopeque);
+    var v = document.getElementById('videoprofesor');
+    var canvas = document.getElementById('videoprofepequenyo');
+    var context = canvas.getContext('2d');
+    var cw = Math.floor(canvas.clientWidth);
+    var ch = Math.floor(canvas.clientHeight);
+    canvas.width = cw;
+    canvas.height = ch;
+    updateBigVideo(v,context,cw,ch);
 
   });
   publisher.on('streamCreated',function(event){
@@ -334,12 +354,12 @@ function muteVideo(video)
   }
   else
   {
-    publisher.publishVideo(false);
+    publisher.publishVideo(true);
   }
 }
 function lockRoom(lock)
 {
-  console.log('voy a cerrar/abrir sala');
+  console.log('voy a cerrar/abrir sala '+tokenTeacher);
   if(lock===0)
   {
     fetch("/close",{
@@ -349,7 +369,7 @@ function lockRoom(lock)
           'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-          "token": token
+          "token": tokenTeacher
       })
       }).then(function fetch(res) {
                     return res.json();
@@ -383,7 +403,7 @@ function lockRoom(lock)
           'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-          "token": token
+          "token": tokenTeacher
       })
       }).then(function fetch(res) {
                     return res.json();
@@ -409,3 +429,107 @@ function lockRoom(lock)
         });
   }
 }
+function enviaPizarra(datos)
+{
+  console.log('envio los datos de la pizarra');
+  datosEnvio={
+    type:'pizarra',
+    datos:datos
+  };
+  session.signal(
+    {
+      data:datosEnvio
+    },
+    function(error) {
+      if (error) {
+        console.log("signal error ("+ error.name+ "): " + error.message);
+      } else {
+        console.log("signal sent.");
+      }
+    }
+  );
+  
+};
+function graba()
+{
+  fetch("/archive/start", {
+    method: "post",
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        "sessionId": sessionId
+    })
+}).then(function fetch(res) {
+  return res.json();
+}).then(function fetchJson(json) {
+    console.log(json);
+    if (json.success === true) {
+       let  grabacion = json.archivo;
+        return grabacion;
+    }
+    else {
+        console.log('error ',json);
+        return false;
+    }
+}).catch(function catchErr(error) {
+    handleError(error);
+    console.log(error);
+});
+}
+function paraGraba(idgrabacion)
+{
+  fetch("/stop/" + idgrabacion, {
+    method: "get",
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    }
+}).then(function fetch(res) {
+      return res.json();
+}).then(function fetchJson(json) {
+  console.log(json);
+    if (json.success === true) {
+        console.log('grabacion parada');
+    }
+    else {
+        console.log('error ',json)
+    }
+}).catch(function catchErr(error) {
+    handleError(error);
+    console.log(error);
+});
+};
+
+
+function updateBigVideo(v,c,w,h) {
+    if(v.paused || v.ended) return false;
+    c.drawImage(v,0,0,w,h);
+    setTimeout(updateBigVideo,20,v,c,w,h);
+};
+
+$(document).ready(function()
+{
+    $(window).bind("beforeunload", function() { 
+      fetch("/available", {
+        method: "post",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "token":tokenTeacher,
+          "available":false
+        })
+      })
+      .then( (response) => { 
+        console.log(response);
+        //hagamos algo bonito que cambie el mundo y tratemos errores!!!
+      }).catch(function catchErr(error) {
+        handleError(error);
+        console.log(error);
+      });
+        return confirm("Do you really want to close?"); 
+    });
+});

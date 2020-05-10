@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title><%= nombreSala %></title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
   <link rel="stylesheet" href="../stylesheets/style.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -20,15 +21,26 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
         <script src="https://js.stripe.com/v3/"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <link rel="icon" type="image/png" sizes="192x192"  href=../img/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="../img/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="../img/favicon-16x16.png">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="../img/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     </head>
     
     <body>
-        <h1 class="text-left"></h1>
-        <p class="text-center" style="font-size: 46;"><strong>THIS ROOM NEEDS SOME FUNDING</strong></p>
         <div class="login-clean">
             <form  action="#">
-                <h2 class="sr-only">Login Form</h2>
-                <div class="btn-group" role="group" style="margin: 50;"><button class="btn btn-primary" type="button">1€</button><button class="btn btn-primary" type="button">5€</button></div>
+                <div id="precios" class="btn-group" role="group" style="margin: 50;"><button class="btn btn-primary" type="button">1€</button><button class="btn btn-primary active" type="button">5€</button></div>
+                <!-- Material input -->
+                <div class="md-form">
+                  <label for="inputIconEx2">Name</label>
+                  <input type="text" id="nombre" class="form-control" placeholder="type your name">
+                  
+                </div>
                 <div class="container-fluid grid">
         
                     <div class="row pull-center">
@@ -91,6 +103,17 @@
         </div>
     </body>
     <script>
+      var precio=500;
+      /*$(".btn-group > button.btn").on("click", function(){
+        var num = '';
+        num = +this.html;
+        alert("Value is " + num);
+        nuevoPrecio=num;
+        console.log(nuevoPrecio);
+        var newPrice= parseInt(nuevoPrecio.slice(0, -1))*100;
+        console.log(newPrice);
+        precio=newPrice;
+      });*/
         new Card({
         form: 'form',
         container: '.card',
@@ -116,45 +139,79 @@
       {
         //AQUI HARIAMOS EL TEMA DE STRIPE Y SI TODO VA BIEN SERVIRIAMOS LA HABITA
         event.preventDefault();
-        var tokenSala= <%-JSON.stringify(token)%>;
-        console.log(tokenSala);
-        fetch("/available/"+tokenSala,{redirect: 'follow'})
-            .then(function fetch(res) {
-                if (res.redirected) {
-                    window.location.href = res.url;
-                }
-                else
-                {
-                    return res.json();
-                }
-                
-            }).then(function fetchJson(json) {
-                console.log(json);
-                        if(json.available==true&&json.exists==true){
-                            window.location.replace("/room/"+tokenSala);
-                        }
-                        else
-                        {
-                            if(json.available==false)
-                            {
-                                alert('la sala aun no esta abierta');
-                            }
-                            if(json.exists==false)
-                            {
-                                alert('la sala no existe');
-                            }
-                        }
-            }).catch(function catchErr(error) {
-            //handleError(error);
-            console.log(error);
-            });
+        Swal.fire({
+            title: 'Confirm payment?',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Pay'}).then((result) => {
+            if (result.value) {
+                //TODO: pasar redirect desde backend
+                  var tokenSala= <%-JSON.stringify(token)%>;
+                  console.log(tokenSala);
+                  fetch("/available/"+tokenSala,{redirect: 'follow'})
+                      .then(function fetch(res) {
+                          if (res.redirected) {
+
+                              window.location.href = res.url;
+                          }
+                          else
+                          {
+                              return res.json();
+                          }
+                          
+                      }).then(function fetchJson(json) {
+                          console.log(json);
+                                  if(json.available==true&&json.exists==true){
+                                      window.location.replace("/room/"+tokenSala);
+                                  }
+                                  else
+                                  {
+                                      if(json.available==false)
+                                      {
+                                        Swal.fire({
+                                          icon: 'error',
+                                          title: 'Oops...',
+                                          text: 'The room is not open yet!. The teacher is not yet around',
+                                          footer: 'You can try later'
+                                        });
+                                      }
+                                      if(json.exists==false)
+                                      {
+                                        Swal.fire({
+                                          icon: 'error',
+                                          title: 'Oops...',
+                                          text: 'This room doesn not exist',
+                                          footer: 'Did you misptyped the link? '
+                                        });
+                                      }
+                                      if(json.cloded==true)
+                                      {
+                                        Swal.fire({
+                                          icon: 'error',
+                                          title: 'Oops...',
+                                          text: 'This room is not accepting any more members',
+                                          footer: 'You can send a message to the teacher so he can let you in... '
+                                        });
+                                      }
+                                  }
+                      }).catch(function catchErr(error) {
+                      //handleError(error);
+                      console.log(error);
+                      });
+            } 
+            else
+              {
+                console.log('no pago');
+              }
+          });
+        
     
     
       }
     </script>
 <%} else { %>
     <script>
-        
+        //TODO: pasar el redirect desde el backend
         var tokenSala= <%-JSON.stringify(token)%>;
         console.log(tokenSala);
         fetch("/available/"+tokenSala,{redirect: 'follow'})
@@ -174,13 +231,23 @@
                         }
                         else
                         {
-                            if(json.available==false)
+                          if(json.available==false)
                             {
-                                alert('la sala aun no esta abierta');
+                              Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'The room is not open yet!. The teacher is not yet around',
+                                footer: 'You can try later'
+                              });
                             }
                             if(json.exists==false)
                             {
-                                alert('la sala no existe');
+                              Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'This room doesn not exist',
+                                footer: 'Did you misptyped the link? '
+                              });
                             }
                         }
             }).catch(function catchErr(error) {

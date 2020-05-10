@@ -3,20 +3,28 @@
 
 <head>
     <title>Hola Class <%= title%></title>
-    <link href="../stylesheets/app_profe.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=PT+Mono" rel="stylesheet">
-    <link href="../stylesheets/estilos_profe.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"
         integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/"
         crossorigin="anonymous"></script>
     <script src="../js/json-preview.js"></script>
     <script src="../js/dom-to-image.min.js"></script>
+    <link rel="icon" type="image/png" sizes="192x192"  href=../img/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="../img/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/favicon-16x16.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="../img/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <script>const apiKey =<%- JSON.stringify(apiKey) %>;
         console.log(apiKey);
         const sessionId =<%- JSON.stringify(sessionId) %>;
         console.log(sessionId);
         const token =<%- JSON.stringify(token) %>;
-        console.log(token);</script>
+        console.log(token);
+        const tokenTeacher =<%- JSON.stringify(tokenProfe) %>;
+        </script>
     <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
 
     <!-- Polyfill for fetch API so that we can fetch the sessionId and token in IE11 -->
@@ -77,8 +85,8 @@
 
                 <div id="videosAlumnos" class="alumnosframe visible">
                     <!--- profe --->
-                    <div id="videoProfeAlumnos" class="profesor-video-miniframe">
-                    </div>
+                    <div id="videoProfeAlumnos" class="profesor-video-miniframe"></div>
+                    
                     <!--- Alumnos 
                     <div class="alumno-video handup"><br><br><br><br></div>
 
@@ -195,21 +203,27 @@
     <div class="menuframe visible">
         <div class="menuframeleft">
 
-
+            <!-- TODO:CHAT
             <div class="button chat" id="saveButton">
-                <span class="badge badge-pill badge-danger">15</span>
-                <i data-feather="message-square"></i>
-                <span class="btntext">Chat</span>
+            <span class="badge badge-pill badge-danger">15</span>
+            <i data-feather="message-square"></i>
+            <span class="btntext">Chat</span>
             </div>
+            -->
+           
 
             <div class="button files" id="saveButton">
                 <i data-feather="folder"></i>
                 <span class="btntext">Files</span>
             </div>
+            <!--
+                TODO:AÑADIR ARCHIVO DE MUSICA
             <div class="button music" id="saveButton">
-                <i data-feather="music"></i>
-                <span class="btntext">Music</span>
+            <i data-feather="music"></i>
+            <span class="btntext">Music</span>
             </div>
+            -->
+            
 
 
 
@@ -225,13 +239,19 @@
             </div>
             <div class="button mic" id="saveButton">
                 <i class="icon" data-feather="mic"></i>
-                <span class="btntext">Mute</span>
+                <span class="btntext">ººMute</span>
             </div>
-
+            <!--
+                 <div class="button add" id="saveButton">
+                <i data-feather="plus"></i>
+                <span class="btntext">Add</span>
+            </div>
+            
             <div class="button add" id="saveButton">
                 <i data-feather="plus"></i>
                 <span class="btntext">Add</span>
             </div>
+            -->
             <div class="button camera" id="saveButton">
                 <i data-feather="video"></i>
                 <span class="btntext">Camera</span>
@@ -253,11 +273,14 @@
                 <i data-feather="lock"></i>
                 <span id="candado" class="btntext">Lock</span>
             </div>
-
-            <div class="button payment" id="saveButton">
+            <!--
+                TODO:VISTA PAYMENTS
+                 <div class="button payment" id="saveButton">
                 <i data-feather="dollar-sign"></i>
                 <span class="btntext">Payment</span>
             </div>
+            -->
+           
 
 
 
@@ -386,6 +409,13 @@
             },
             onChange: function () {
                 console.log('algo ha cambiado');
+                editor.save().then((outputData) => {
+                    console.log('Article data: ', outputData);
+                    enviaPizarra(outputData);
+                }).catch((error) => {
+                    console.log('Saving failed: ', error)
+                });
+
             }
         });
 
@@ -425,51 +455,13 @@
                 $('.record').prepend('<i data-feather="circle"></i>');
                 feather.replace();
                 console.log('grabando');
-                fetch("/archive/start", {
-                    method: "post",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "sessionId": token
-                    })
-                }).then(function fetchJson(json) {
-                    if (json.success === true) {
-                        grabacion = json.archivo;
-                    }
-                    else {
-                        console.log('error ',json)
-                    }
-                }).catch(function catchErr(error) {
-                    handleError(error);
-                    console.log(error);
-                });
+                grabacion=graba();
                 record = 1;
             } else {
                 $('.rec .feather').remove();
                 $('.rec').prepend('<i data-feather="circle"></i>');
                 feather.replace();
-                fetch("/archive/" + grabacion + "/stop", {
-                    method: "post",
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "sessionId": token
-                    })
-                }).then(function fetchJson(json) {
-                    if (json.success === true) {
-                        console.log('grabacion parada');
-                    }
-                    else {
-                        console.log('error ',json)
-                    }
-                }).catch(function catchErr(error) {
-                    handleError(error);
-                    console.log(error);
-                });
+                paraGraba(grabacion);
                 record = 0;
             }
         });

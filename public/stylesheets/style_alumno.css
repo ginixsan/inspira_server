@@ -1180,18 +1180,18 @@ div.alumnosframe.visible {
 
 div.profesor-video-miniframe {
 	display: inline-block;
-	width: 35%;
+	width: 30%;
 	background-color: #5e5e5e;
-	height:25%;
+	height: 25%;
 	margin-right: 1%;
 	
 	-moz-transition: all 1s ease;
-	-ms-transition: all 1s ease;
-
-	-o-transition: all 1s ease;
-	-webkit-transition: all 1s ease;
-	transition: all 1s ease;
-	vertical-align: top;
+                -ms-transition: all 1s ease;
+                
+                -o-transition: all 1s ease;
+                -webkit-transition: all 1s ease;
+                transition: all 1s ease;
+                vertical-align: top;
 	margin-bottom: 1%;
 	margin-left: 0;
 }
@@ -1229,7 +1229,7 @@ div.menuframecenter {
 	position: relative;
 	margin-right: auto;
 	margin-left: auto;
-	width: 395px;
+	width: 250px;
 	bottom: 75px;
 }
 

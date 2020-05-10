@@ -8,6 +8,8 @@ body {
 .editor {
   background-color:lightgray;
   pointer-events:none;
+  position: absolute;
+  left: 50%;
 }
 .image{
   max-width: 100%;
