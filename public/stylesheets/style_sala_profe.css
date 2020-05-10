@@ -1246,3 +1246,12 @@ div.alumno-video.talking {
 	top: 9px;
 	right: 9px;
 }
+.alumno-video video{
+	height: 100%;
+	width: 100%;
+		
+}
+#videoprofesor{
+	height: 100%;
+	width: 100%;
+}
