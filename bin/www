@@ -20,6 +20,7 @@ app.set('port', port);
  */
 if(process.env.NODE_ENV=='test')
 {
+  console.log('servidor corriendo en test');
   var port = normalizePort(process.env.PORT || '8080');
   var server = http.createServer(app);
 }

@@ -1,4 +1,5 @@
 const express = require('express');
+const helmet = require('helmet');
 const path = require('path');
 const favicon = require('serve-favicon');
 const logger = require('morgan');
@@ -10,6 +11,8 @@ const cors = require('cors');
 const rateLimiterRedisMiddleware = require('./middlewares/rateLimiterRedis');
 
 const app = express();
+app.use(helmet());
+app.use(helmet.hidePoweredBy({ setTo: 'Blood,sweat and tears' }))
 app.use(rateLimiterRedisMiddleware);
 app.engine('.html', require('ejs').__express);
 
