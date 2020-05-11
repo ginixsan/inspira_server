@@ -9,6 +9,10 @@
         crossorigin="anonymous"></script>
     <script src="../js/json-preview.js"></script>
     <script src="../js/dom-to-image.min.js"></script>
+    <script type="text/javascript" src="../js/addmp3.js"></script>
+    <script type="text/javascript" src="../js/MultiStreamsMixer.min.js"></script>
+    <script type="text/javascript" src="../js/FileSelector.js"></script>
+    <script type="text/javascript" src="../js/media-stream-control.js"></script>
     <link rel="icon" type="image/png" sizes="192x192"  href="../img/android-icon-192x192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="../img/favicon-96x96.png">
@@ -44,6 +48,7 @@
     <link rel="stylesheet" href="../stylesheets/style_sala_profe.css">
     <script src="https://unpkg.com/feather-icons"></script>
     <script type="text/javascript" src="../js/app_profe.js"></script>
+    
 </head>
 
 <body>
@@ -216,6 +221,11 @@
                 <i data-feather="folder"></i>
                 <span class="btntext">Files</span>
             </div>
+            <div class="button musics" id="saveButton">
+                <i class="icon" data-feather="folder"></i>
+                <span class="btntext">Add mp3</span>
+            </div>
+                
             <!--
                 TODO:AÑADIR ARCHIVO DE MUSICA
             <div class="button music" id="saveButton">
@@ -479,6 +489,9 @@
                 muteaAudio(mic);
                 mic = 0;
             }
+        });
+        $(document).on("click", ".musics", function () {
+            recogeArchivo();
         });
 
         $(document).on("click", ".camera", function () {
