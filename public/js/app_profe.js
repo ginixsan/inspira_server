@@ -114,7 +114,7 @@ function CopyToClipboard(containerid) {
     var range = document.createRange();
     range.selectNode(document.getElementById(containerid));
     window.getSelection().addRange(range);
-    document.execCommand("copy");
+    document.execCommand("copy"); 
     alert("El texto se ha copiado")
   }
 }
