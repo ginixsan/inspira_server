@@ -122,6 +122,22 @@ function initializeSession() {
     {
       console.log(event.stream.connection.connectionId);
       profeId=event.stream.connection;
+      session.signal(
+        {
+          to: profeId,
+          data:{
+            id:session.connection.connectionId,
+            type:"recuperaPizarra",
+          }
+        },
+        function(error) {
+          if (error) {
+            console.log("signal error ("+ error.name+ "): " + error.message);
+          } else {
+            console.log("signal sent.");
+          }
+        }
+      );
       var subscriberOptions = {
         insertMode: 'append',
         width: '100%',
@@ -345,7 +361,7 @@ function initializeSession() {
                   );
                   
                 };
-       });
+    });
     }
   });
 }

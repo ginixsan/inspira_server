@@ -280,6 +280,14 @@ function initializeSession() {
       case "chatMessage":
         console.log('chat de '+event.data.id);
         break;
+      case "enviaPizarra":
+        editor.save().then((outputData) => {
+          console.log('Article data: ', outputData);
+          enviaPizarra(outputData);
+        }).catch((error) => {
+          console.log('Saving failed: ', error)
+        });
+        break;
       default:
           break;
     }
