@@ -1,6 +1,7 @@
 var Publisher2;
 var arrayConexiones=[];
 var session;
+let envioConexion;
 function handleError(error) {
   if (error) {
     console.error(error);
@@ -229,7 +230,8 @@ function initializeSession() {
               //alumno-video
               case 'alumno-video handup':
                 levantado.className='alumno-video talking';
-                let envioConexion=buscaEnArray(event.data.id,arrayConexiones);
+                levantado.conexion=event.data.id;
+               envioConexion=buscaEnArray(levantado.conexion,arrayConexiones);
                 session.signal(
                   {
                     to: envioConexion,
@@ -248,7 +250,7 @@ function initializeSession() {
                 );
                 break;
               case 'alumno-video talking':
-                  levantado.className='alumno-video';
+                  envioConexion=buscaEnArray(levantado.conexion,arrayConexiones);                  levantado.className='alumno-video';
                   session.signal(
                     {
                       to: envioConexion,
@@ -310,23 +312,44 @@ function initializeSession() {
     var video=event.element;
     video.id="videoprofesor";
     video.poster="../img/coco.jpeg";
-    var videopeque=document.createElement('canvas');
-    videopeque.id='videoprofepequenyo';
+   // SIN VIDEO PEQUEÑO var videopeque=document.createElement('canvas');
+    // SIN VIDEO PEQUEÑO  videopeque.id='videoprofepequenyo';
     /*var video2=video.cloneNode(true);
     video2.id="videoprofepequeño";
     video2.src=video.src;*/
     document.getElementById('videoprofe').appendChild(video);
-    document.getElementById('videoProfeAlumnos').appendChild(videopeque);
-    $('#videoprofepequenyo').addClass("alumno-video");
-    var v = document.getElementById('videoprofesor');
-    var canvas = document.getElementById('videoprofepequenyo');
-    var context = canvas.getContext('2d');
-    var cw = Math.floor(canvas.clientWidth);
-    var ch = Math.floor(canvas.clientHeight);
-    canvas.width = cw;
-    canvas.height = ch;
-    updateBigVideo(v,context,cw,ch);
-
+     // SIN VIDEO PEQUEÑO var v = document.getElementById('videoprofesor');
+     // SIN VIDEO PEQUEÑO document.getElementById('videoProfeAlumnos').appendChild(videopeque);
+    // SIN VIDEO PEQUEÑO  $('#videoprofepequenyo').addClass("alumno-video");
+    
+     // SIN VIDEO PEQUEÑO var canvas = document.getElementById('videoprofepequenyo');
+    
+  
+    /* SIN VIDEO PEQUEÑO
+    detectWebcam(function(hasWebcam) {
+      console.log('Webcam: ' + (hasWebcam ? 'yes' : 'no'));
+      if(!hasWebcam)
+      {
+        var context = canvas.getContext('2d');
+        var cw = Math.floor(canvas.clientWidth);
+        var ch = Math.floor(canvas.clientHeight);
+        canvas.width = cw;
+        canvas.height = ch;
+        context.drawImage(v,0,0,canvas.width,canvas.height);
+        console.log('saco imagen de no hay video');
+      }
+      else
+      {
+        var context = canvas.getContext('2d');
+        var cw = Math.floor(canvas.clientWidth);
+        var ch = Math.floor(canvas.clientHeight);
+        canvas.width = cw;
+        canvas.height = ch;
+        updateBigVideo(v,context,cw,ch);
+      }
+      });*/
+      
+   
   });
   publisher.on('streamCreated',function(event){
     console.log('creadoStream');
@@ -522,12 +545,24 @@ function paraGraba(idgrabacion)
 
 
 function updateBigVideo(v,c,w,h) {
-    if(v.paused || v.ended) return false;
+  console.log('llego');
+  detectWebcam(function(hasWebcam) {
+    console.log('Webcam: ' + (hasWebcam ? 'yes' : 'no'));
+      if(!hasWebcam)
+      {
+        c.drawImage(v,0,0,w,h);
+        console.log('saco imagen de no hay video');
+      }
+    });
+    if(v.paused || v.ended) 
+    {
+      return false;
+    }
     c.drawImage(v,0,0,w,h);
     setTimeout(updateBigVideo,20,v,c,w,h);
 };
 
-$(document).ready(function()
+/*$(document).ready(function()
 {
     $(window).bind("beforeunload", function() { 
       fetch("/available", {
@@ -550,7 +585,7 @@ $(document).ready(function()
       });
         return confirm("Do you really want to close?"); 
     });
-});
+});*/
 function getMp3Stream(callback) {
   var selector = new FileSelector();
   selector.accept = '*.mp3';
@@ -596,3 +631,11 @@ function recogeArchivo(){
     Publisher2.setAudioSource(result);
    });
 } 
+function detectWebcam(callback) {
+  let md = navigator.mediaDevices;
+  if (!md || !md.enumerateDevices) return callback(false);
+  md.enumerateDevices().then(devices => {
+    callback(devices.some(device => 'videoinput' === device.kind));
+  })
+}
+
