@@ -1,21 +1,24 @@
-var gainNode;
-var context;
+/*var gainNode;
+//var context;
 
 function recogeArchivo(){
-    getMp3Stream(function(result,duration)
+   /* getMp3Stream(function(result,duration)
     {
         console.log(result,duration);
+        console.log(typeof result);
         var audioPreview = document.createElement('audio');
         audioPreview.controls = true;
         audioPreview.autoplay = true;
         audioPreview.srcObject=result;
         document.body.appendChild(audioPreview);
-        gainController = new MicGainController(stream);
-    // set gain to 20%
-    gainControl.setGain(.1);
-    // set gain to 0, effectively muting it
-    //gainControl.setGain(0); 
-    });
+        var gainController =new  MediaStreamGainController(result);
+        // set gain to 20%
+        gainController.setGain(.1);
+        // set gain to 0, effectively muting it
+        //gainControl.setGain(0); 
+    });*/
+/*getMixedMicrophoneAndMp3();
+    
 }
 function getMp3Stream(callback) {
     var selector = new FileSelector();
@@ -42,7 +45,7 @@ function getMp3Stream(callback) {
             soundSource.connect(gainNode);
             var destination = context.createMediaStreamDestination();
             soundSource.connect(destination);
-
+            gainNode.gain.value = 0.05; 
             // durtion=second*1000 (milliseconds)
             callback(destination.stream, buffer.duration * 1000);
         }
@@ -54,45 +57,38 @@ function getMp3Stream(callback) {
 function getMixedMicrophoneAndMp3() {
 
     getMp3Stream(function(mp3Stream) {
-        navigator.mediaDevices.getUserMedia({
+
+        /*navigator.mediaDevices.getUserMedia({
             audio: true
         }).then(function(microphoneStream) {
-            mixer = new MultiStreamsMixer([microphoneStream, mp3Stream]);
-            // mixer.useGainNode = false;
+            mixer = new MultiStreamsMixer([microphoneStream, mp3Stream],null,0.01);
+            mixer.useGainNode = true;
             var audioPreview = document.createElement('audio');
+            audioPreview.id="primero";
             audioPreview.controls = true;
             audioPreview.autoplay = true;
-            
             audioPreview.srcObject = mixer.getMixedStream();
-
-            videoPreview.replaceWith(audioPreview);
-            videoPreview = audioPreview;
-
-            var secondsLeft = 6;
-            (function looper() {
-                secondsLeft--;
-
-                if(secondsLeft < 0) {
-                    updateMediaHTML('Mixed Microphone+Mp3!');
-                    return;
-                }
-                updateMediaHTML('Seconds left: ' + secondsLeft);
-                setTimeout(looper, 1000);
-            })();
-
+            document.body.appendChild(audioPreview);
             var recorder = RecordRTC(mixer.getMixedStream(), {
                 recorderType: StereoAudioRecorder
             });
-
+            
             recorder.startRecording();
 
             setTimeout(function() {
                 recorder.stopRecording(function() {
-                    audioPreview.removeAttribute('srcObject');
-                    audioPreview.removeAttribute('src');
-                    audioPreview.src = URL.createObjectURL(recorder.getBlob());
+                    console.log('por fion');
+                    var elemento=document.getElementById('primero');
+                    elemento.parentNode.removeChild(elemento);
+                    var audioPreview2 = document.createElement('audio');
+                    audioPreview2.id="segundo";
+                    audioPreview2.controls = true;
+                    audioPreview2.autoplay = true;        
+                    audioPreview2.src = URL.createObjectURL(recorder.getBlob());
+
+                     document.body.appendChild(audioPreview2);
                 });
-            }, 5000)
+            }, 10000)
         });
     });
 }

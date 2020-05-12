@@ -1,3 +1,4 @@
+var Publisher2;
 var arrayConexiones=[];
 var session;
 function handleError(error) {
@@ -550,3 +551,48 @@ $(document).ready(function()
         return confirm("Do you really want to close?"); 
     });
 });
+function getMp3Stream(callback) {
+  var selector = new FileSelector();
+  selector.accept = '*.mp3';
+  selector.selectSingleFile(function(mp3File) {
+      window.AudioContext = window.AudioContext || window.webkitAudioContext;
+      context= new AudioContext();
+      gainNode = context.createGain();
+      gainNode.connect(context.destination);
+      gainNode.gain.value = 0; // don't play for self
+
+      var reader = new FileReader();
+      reader.onload = (function(e) {
+          // Import callback function
+          // provides PCM audio data decoded as an audio buffer
+          context.decodeAudioData(e.target.result, createSoundSource);
+      });
+      reader.readAsArrayBuffer(mp3File);
+
+      function createSoundSource(buffer) {
+          var soundSource = context.createBufferSource();
+          soundSource.buffer = buffer;
+          soundSource.start(0, 0 / 1000);
+          soundSource.connect(gainNode);
+          var destination = context.createMediaStreamDestination();
+          soundSource.connect(destination);
+          gainNode.gain.value = 0.05; 
+          // durtion=second*1000 (milliseconds)
+          callback(destination.stream, buffer.duration * 1000);
+      }
+  }, function() {
+      document.querySelector('#btn-get-mixed-stream').disabled = false;
+      alert('Please select mp3 file.');
+  });
+}
+function recogeArchivo(){
+  var pubOptions = {publishAudio:true, publishVideo:false};
+  var audio= document.createElement('div');
+  audio.id='pepito';
+// Replace replacementElementId with the ID of the DOM element to replace:
+   getMp3Stream(function(result,duration)
+   {
+    Publisher2 = OT.initPublisher('pepito', pubOptions);
+    Publisher2.setAudioSource(result);
+   });
+} 
