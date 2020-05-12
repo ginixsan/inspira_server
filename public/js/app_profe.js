@@ -225,13 +225,13 @@ function initializeSession() {
           console.log(event);
           var levantado=document.getElementById(event.data.id);
           levantado.className='alumno-video handup';
-          levantado.addEventListener('click',function(e,conexion){
+          levantado.addEventListener('click',function(){
             switch (levantado.className) {
               //alumno-video
               case 'alumno-video handup':
                 levantado.className='alumno-video talking';
                 levantado.conexion=event.data.id;
-               envioConexion=buscaEnArray(levantado.conexion,arrayConexiones);
+                envioConexion=buscaEnArray(levantado.conexion,arrayConexiones);
                 session.signal(
                   {
                     to: envioConexion,
