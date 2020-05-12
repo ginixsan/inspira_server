@@ -13,7 +13,8 @@ const pizarra = mongoose.model('pizarra')
 let entry = mongoose.model('entries');
 var randomToken = require('random-token');
 const redis = require("redis");
-const REDIS_URL = process.env.REDIS_URL
+const REDIS_URL = process.env.REDIS_URL;
+const web=process.env.WEBPAGE_BASE_URL;
 const client = redis.createClient({ host: REDIS_URL })
 client.on('error', function (err) {
   console.log('error redis evento - ' + client.host + ':' + client.port + ' - ' + err);
@@ -80,7 +81,7 @@ router.post('/room', function (req, res) {
 
         var tokenSala = randomToken(16);
         var tokenProfe = randomToken(16);
-        console.log('el token ' + token);
+        console.log('el token ' + tokenSala);
         let arrayParticipants;
         if (req.body.participants) {
           let participantes = req.body.participants;
@@ -106,6 +107,7 @@ router.post('/room', function (req, res) {
             amount: amount
           }
         };
+        console.log(web);
         if (arrayParticipants) {
           objetoModelo.participants = arrayParticipants;
         }
@@ -125,7 +127,9 @@ router.post('/room', function (req, res) {
             apiKey: apiKey,
             sessionId: session.sessionId,
             token: token,
-            tokenSala: tokenProfe
+            tokenSala: tokenProfe,
+            tokenLink:objetoModelo.unifiedToken,
+            web:web
           });
         });
         if (err) {

@@ -21,7 +21,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
         <script src="https://js.stripe.com/v3/"></script>
         <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <link rel="icon" type="image/png" sizes="192x192"  href=../img/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="../img/android-icon-192x192.png">
         <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="96x96" href="../img/favicon-96x96.png">
         <link rel="icon" type="image/png" sizes="16x16" href="../img/favicon-16x16.png">
@@ -101,6 +101,7 @@
                       </div>
                     </div>
         </div>
+            </form>
     </body>
     <script>
       var precio=500;
@@ -210,9 +211,43 @@
       }
     </script>
 <%} else { %>
-    <script>
-        //TODO: pasar el redirect desde el backend
-        var tokenSala= <%-JSON.stringify(token)%>;
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>GET INTO THE ROOM WITH YOUR NAME</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="icon" type="image/png" sizes="192x192"  href="../img/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="../img/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../img/favicon-16x16.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="../img/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  </head>
+
+  <body>
+    <div class="login-clean">
+        <form  action="#">
+            <!-- Material input -->
+            <div class="md-form">
+              <label for="inputIconEx2">Name</label>
+              <input type="text" id="nombre" class="form-control" placeholder="type your name">
+              
+            </div>
+           
+            
+            <div class="col-md-12 text-right">
+              <button id="entrar" type="button" class="btn btn-success">Get in!</button>
+              <button type="button" class="btn btn-info">Clear</button>
+            </div>
+            
+          </form>
+    </div>
+  </body>
+  <script>
+    //TODO: pasar el redirect desde el backend
+    var tokenSala= <%-JSON.stringify(token)%>;
         console.log(tokenSala);
         fetch("/available/"+tokenSala,{redirect: 'follow'})
             .then(function fetch(res) {
@@ -227,7 +262,11 @@
             }).then(function fetchJson(json) {
                 console.log(json);
                         if(json.available==true&&json.exists==true){
+                          var botonEntrar=document.getElementById('entrar');
+                          botonEntrar.onclick=function(e)
+                          {
                             window.location.replace("/room/"+tokenSala);
+                          }     
                         }
                         else
                         {
@@ -254,6 +293,8 @@
             //handleError(error);
             console.log(error);
             });
+      
+        
        
     </script>
 <% } %>

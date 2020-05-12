@@ -34,7 +34,6 @@ function remueveEnArray(busco,array)
 function anyadeAlumno(alumnos,video,nombre){
   var contenedorAlumno=document.createElement('div');
   contenedorAlumno.id=nombre; 
-  contenedorAlumno.class="alumno-video";
   contenedorAlumno.appendChild(video);
   //document.getElementById('videosAlumnos').appendChild(contenedorAlumno);
   if (alumnos == 1) {
@@ -42,6 +41,7 @@ function anyadeAlumno(alumnos,video,nombre){
     $('div.profesor-video-miniframe').css('width', '48%');
     $('div.profesor-video-miniframe').css('height', '47%');
     $('div.alumnosframe').append(contenedorAlumno);
+    $('#'+nombre).addClass("alumno-video");
     $('div.alumno-video').css('width', '48%');
     $('div.alumno-video').css('height', '47%');
     }
@@ -53,6 +53,7 @@ function anyadeAlumno(alumnos,video,nombre){
       $('div.profesor-video-miniframe').css('height', '31%');
       $('div.alumno-video').css('width', '32%');
       $('div.alumnosframe').append(contenedorAlumno);
+      $('#'+nombre).addClass("alumno-video");
       $('div.alumno-video').css('height', '31%');
   }             
 
@@ -61,6 +62,7 @@ function anyadeAlumno(alumnos,video,nombre){
       $('div.profesor-video-miniframe').css('width', '32%');
       $('div.profesor-video-miniframe').css('height', '31%');
       $('div.alumnosframe').append(contenedorAlumno);
+      $('#'+nombre).addClass("alumno-video");
       $('div.alumno-video').css('width', '32%');
       $('div.alumno-video').css('height', '31%');
   }
@@ -71,6 +73,7 @@ function anyadeAlumno(alumnos,video,nombre){
       $('div.profesor-video-miniframe').css('width', '23%');
       $('div.profesor-video-miniframe').css('height', '22%');
       $('div.alumnosframe').append(contenedorAlumno);
+      $('#'+nombre).addClass("alumno-video");
       $('div.alumno-video').css('width', '23%');
       $('div.alumno-video').css('height', '22%');
   }
@@ -79,6 +82,7 @@ function anyadeAlumno(alumnos,video,nombre){
       $('div.profesor-video-miniframe').css('width', '18%');
       $('div.profesor-video-miniframe').css('height', '17%');
       $('div.alumnosframe').append(contenedorAlumno);
+      $('#'+nombre).addClass("alumno-video");
       $('div.alumno-video').css('width', '18%');
       $('div.alumno-video').css('height', '17%');
 
@@ -88,6 +92,7 @@ function anyadeAlumno(alumnos,video,nombre){
       $('div.profesor-video-miniframe').css('width', '14%');
       $('div.profesor-video-miniframe').css('height', '13%');
       $('div.alumnosframe').append(contenedorAlumno);
+      $('#'+nombre).addClass("alumno-video");
       $('div.alumno-video').css('width', '14%');
       $('div.alumno-video').css('height', '13%');
 
@@ -98,6 +103,7 @@ function anyadeAlumno(alumnos,video,nombre){
       $('div.profesor-video-miniframe').css('width', '12%');
       $('div.profesor-video-miniframe').css('height', '11%');
       $('div.alumnosframe').append(contenedorAlumno);
+      $('#'+nombre).addClass("alumno-video");
       $('div.alumno-video').css('width', '12%');
       $('div.alumno-video').css('height', '11%');
 
@@ -116,6 +122,22 @@ function initializeSession() {
     {
       console.log(event.stream.connection.connectionId);
       profeId=event.stream.connection;
+      session.signal(
+        {
+          to: profeId,
+          data:{
+            id:session.connection.connectionId,
+            type:"recuperaPizarra",
+          }
+        },
+        function(error) {
+          if (error) {
+            console.log("signal error ("+ error.name+ "): " + error.message);
+          } else {
+            console.log("signal sent.");
+          }
+        }
+      );
       var subscriberOptions = {
         insertMode: 'append',
         width: '100%',
@@ -339,7 +361,7 @@ function initializeSession() {
                   );
                   
                 };
-       });
+    });
     }
   });
 }

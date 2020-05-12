@@ -9,7 +9,11 @@
         crossorigin="anonymous"></script>
     <script src="../js/json-preview.js"></script>
     <script src="../js/dom-to-image.min.js"></script>
-    <link rel="icon" type="image/png" sizes="192x192"  href=../img/android-icon-192x192.png">
+    <script type="text/javascript" src="../js/mediastream-gain.bundle.js"></script>
+    <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
+    <script type="text/javascript" src="../js/MultiStreamsMixer.js"></script>
+    <script type="text/javascript" src="../js/FileSelector.js"></script>
+    <link rel="icon" type="image/png" sizes="192x192"  href="../img/android-icon-192x192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="../img/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../img/favicon-16x16.png">
@@ -18,6 +22,7 @@
     <meta name="theme-color" content="#ffffff">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <script>const apiKey =<%- JSON.stringify(apiKey) %>;
+
         console.log(apiKey);
         const sessionId =<%- JSON.stringify(sessionId) %>;
         console.log(sessionId);
@@ -44,6 +49,7 @@
     <link rel="stylesheet" href="../stylesheets/style_sala_profe.css">
     <script src="https://unpkg.com/feather-icons"></script>
     <script type="text/javascript" src="../js/app_profe.js"></script>
+    
 </head>
 
 <body>
@@ -216,6 +222,11 @@
                 <i data-feather="folder"></i>
                 <span class="btntext">Files</span>
             </div>
+            <div class="button musics" id="saveButton">
+                <i class="icon" data-feather="folder"></i>
+                <span class="btntext">Add mp3</span>
+            </div>
+                
             <!--
                 TODO:AÑADIR ARCHIVO DE MUSICA
             <div class="button music" id="saveButton">
@@ -479,6 +490,9 @@
                 muteaAudio(mic);
                 mic = 0;
             }
+        });
+        $(document).on("click", ".musics", function () {
+            recogeArchivo();
         });
 
         $(document).on("click", ".camera", function () {

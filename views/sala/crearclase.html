@@ -36,7 +36,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <link rel="stylesheet" href="../stylesheets/style.css">
 
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
         <script src="https://unpkg.com/feather-icons@4.28.0/dist/feather.min.js"></script>
 
 
@@ -203,7 +203,14 @@
                 }
             return value;
             }
-            
+            function copiaClipboard(text) {
+                var dummy = document.createElement("textarea");
+                document.body.appendChild(dummy);
+                dummy.value = text;
+                dummy.select();
+                document.execCommand("copy");
+                document.body.removeChild(dummy);
+            }
             //CallToRoom
             $(document).on("click","button#start-conferencing",function() {
                 var email = $('#profe-email').val();
@@ -241,7 +248,18 @@
                     data: JSON.stringify(data),
                     success: function (resp) {
                         console.log(resp);
-                        window.location.replace("/room/"+resp.tokenSala);
+                        Swal.fire({
+                            title: 'Share this link with your alumni',
+                            text: resp.web+"/room/"+resp.tokenLink,
+                            icon: 'success',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Copy to clipboard and go to the room'
+                            }).then((result) => {
+                            if (result.value) {
+                               copiaClipboard(resp.web+"/room/"+resp.tokenLink);
+                               window.location.replace("/room/"+resp.tokenSala);
+                            }
+                            })
 
                     }
                 });

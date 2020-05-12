@@ -1,3 +1,4 @@
+var Publisher2;
 var arrayConexiones=[];
 var session;
 function handleError(error) {
@@ -29,12 +30,14 @@ function anyadeAlumno(alumnos,video,nombre){
     contenedorAlumno.id=nombre; 
     contenedorAlumno.class="alumno-video";
     contenedorAlumno.appendChild(video);
+    video.id="videalumnitos";
     //document.getElementById('videosAlumnos').appendChild(contenedorAlumno);
     if (alumnos == 1) {
       $('div.alumnosverticalalign.visible').css('margin-top', '9%');
       $('div.profesor-video-miniframe').css('width', '48%');
       $('div.profesor-video-miniframe').css('height', '47%');
       $('#videosAlumnos').append(contenedorAlumno);
+      $('#'+nombre).addClass("alumno-video");
       $('div.alumno-video').css('width', '48%');
       $('div.alumno-video').css('height', '47%'); 
       }
@@ -46,6 +49,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.profesor-video-miniframe').css('height', '31%');
         $('div.alumno-video').css('width', '32%');
         $('#videosAlumnos').append(contenedorAlumno);
+        $('#'+nombre).addClass("alumno-video");
         $('div.alumno-video').css('height', '31%');
     }             
 
@@ -54,6 +58,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.profesor-video-miniframe').css('width', '32%');
         $('div.profesor-video-miniframe').css('height', '31%');
         $('#videosAlumnos').append(contenedorAlumno);
+        $('#'+nombre).addClass("alumno-video");
         $('div.alumno-video').css('width', '32%');
         $('div.alumno-video').css('height', '31%');
     }
@@ -64,6 +69,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.profesor-video-miniframe').css('width', '23%');
         $('div.profesor-video-miniframe').css('height', '22%');
         $('#videosAlumnos').append(contenedorAlumno);
+        $('#'+nombre).addClass("alumno-video");
         $('div.alumno-video').css('width', '23%');
         $('div.alumno-video').css('height', '22%');
     }
@@ -72,6 +78,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.profesor-video-miniframe').css('width', '18%');
         $('div.profesor-video-miniframe').css('height', '17%');
         $('#videosAlumnos').append(contenedorAlumno);
+        $('#'+nombre).addClass("alumno-video");
         $('div.alumno-video').css('width', '18%');
         $('div.alumno-video').css('height', '17%');
 
@@ -81,6 +88,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.profesor-video-miniframe').css('width', '14%');
         $('div.profesor-video-miniframe').css('height', '13%');
         $('#videosAlumnos').append(contenedorAlumno);
+        $('#'+nombre).addClass("alumno-video");
         $('div.alumno-video').css('width', '14%');
         $('div.alumno-video').css('height', '13%');
 
@@ -91,6 +99,7 @@ function anyadeAlumno(alumnos,video,nombre){
         $('div.profesor-video-miniframe').css('width', '12%');
         $('div.profesor-video-miniframe').css('height', '11%');
         $('#videosAlumnos').append(contenedorAlumno);
+        $('#'+nombre).addClass("alumno-video");
         $('div.alumno-video').css('width', '12%');
         $('div.alumno-video').css('height', '11%');
 
@@ -106,7 +115,7 @@ function CopyToClipboard(containerid) {
     var range = document.createRange();
     range.selectNode(document.getElementById(containerid));
     window.getSelection().addRange(range);
-    document.execCommand("copy");
+    document.execCommand("copy"); 
     alert("El texto se ha copiado")
   }
 }
@@ -272,6 +281,14 @@ function initializeSession() {
       case "chatMessage":
         console.log('chat de '+event.data.id);
         break;
+      case "enviaPizarra":
+        editor.save().then((outputData) => {
+          console.log('Article data: ', outputData);
+          enviaPizarra(outputData);
+        }).catch((error) => {
+          console.log('Saving failed: ', error)
+        });
+        break;
       default:
           break;
     }
@@ -300,6 +317,7 @@ function initializeSession() {
     video2.src=video.src;*/
     document.getElementById('videoprofe').appendChild(video);
     document.getElementById('videoProfeAlumnos').appendChild(videopeque);
+    $('#videoprofepequenyo').addClass("alumno-video");
     var v = document.getElementById('videoprofesor');
     var canvas = document.getElementById('videoprofepequenyo');
     var context = canvas.getContext('2d');
@@ -533,3 +551,48 @@ $(document).ready(function()
         return confirm("Do you really want to close?"); 
     });
 });
+function getMp3Stream(callback) {
+  var selector = new FileSelector();
+  selector.accept = '*.mp3';
+  selector.selectSingleFile(function(mp3File) {
+      window.AudioContext = window.AudioContext || window.webkitAudioContext;
+      context= new AudioContext();
+      gainNode = context.createGain();
+      gainNode.connect(context.destination);
+      gainNode.gain.value = 0; // don't play for self
+
+      var reader = new FileReader();
+      reader.onload = (function(e) {
+          // Import callback function
+          // provides PCM audio data decoded as an audio buffer
+          context.decodeAudioData(e.target.result, createSoundSource);
+      });
+      reader.readAsArrayBuffer(mp3File);
+
+      function createSoundSource(buffer) {
+          var soundSource = context.createBufferSource();
+          soundSource.buffer = buffer;
+          soundSource.start(0, 0 / 1000);
+          soundSource.connect(gainNode);
+          var destination = context.createMediaStreamDestination();
+          soundSource.connect(destination);
+          gainNode.gain.value = 0.05; 
+          // durtion=second*1000 (milliseconds)
+          callback(destination.stream, buffer.duration * 1000);
+      }
+  }, function() {
+      document.querySelector('#btn-get-mixed-stream').disabled = false;
+      alert('Please select mp3 file.');
+  });
+}
+function recogeArchivo(){
+  var pubOptions = {publishAudio:true, publishVideo:false};
+  var audio= document.createElement('div');
+  audio.id='pepito';
+// Replace replacementElementId with the ID of the DOM element to replace:
+   getMp3Stream(function(result,duration)
+   {
+    Publisher2 = OT.initPublisher('pepito', pubOptions);
+    Publisher2.setAudioSource(result);
+   });
+} 
