@@ -17,7 +17,7 @@
     "eslint": "^7.0.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-fileupload": "^1.1.9",
     "helmet": "^3.22.0",
     "lodash": "^4.17.19",
